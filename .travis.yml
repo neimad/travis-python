@@ -1,0 +1,20 @@
+language: shell
+
+os:
+  - linux
+  - osx
+  - windows
+
+osx_image: xcode11
+
+env:
+  - PYTHON="3.7"
+  - PYTHON="3.6"
+
+script:
+  - source travis-python.bash
+  - install_python $CACHE/Python $PYTHON
+
+cache:
+  directories:
+    - $CACHE
