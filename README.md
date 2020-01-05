@@ -1,6 +1,6 @@
 travis-python
-========
-Helps install Python to Travis CI machines in Linux, macOS and Windows.
+=============
+Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 
 [![Build Status][ci-badge]][ci]
 [![License][license-badge]][license]
@@ -20,7 +20,7 @@ The `specifier` is similar to [the `python` key available in the Travis CI confi
    available,
  - if the patch version is ignored (e.g. `3.7`) the latest matching stable
    version available is installed, if any,
- - if the only the major version is specified (e.g. `3`) the latest matching
+ - if only the major version is specified (e.g. `3`) the latest matching
    stable version available is installed, if any,
 
 > :warning: Version constraints (e.g. `~`, `^` or `*`) are NOT supported.
@@ -47,17 +47,11 @@ os:
   - windows
 ```
 
-If you specified macOS, you can also specify the image version:
-
-```yaml
-osx_image: xcode11
-```
-
-Then, loads the _travis-python_ script during the `pre-install` phase:
+Finally, load the _travis-python_ script during the `pre-install` phase:
 
 ```yaml
 pre-install:
-  - source <(curl -sSL https://raw.githubusercontent.com/neimad/travis-python/master/travis-python.bash)
+  - source <(curl -sSL https://git.io/JeaZo)
   - install_python $LOCATION $VERSION
 ```
 
@@ -101,12 +95,13 @@ os:
 osx_image: xcode11
 
 env:
+  - PYTHON="3.8"
   - PYTHON="3.7"
   - PYTHON="3.6"
   - PYTHON="2"
 
 pre-install:
-  - source <(curl -sSL https://raw.githubusercontent.com/neimad/travis-python/master/travis-python.bash)
+  - source <(curl -sSL https://git.io/JeaZo)
   - install_python $HOME/Python $PYTHON
 
 install: ...
@@ -135,9 +130,18 @@ To solve those problems, some directions have been taken:
 
  - use Pyenv to install Python environment on Linux and macOS,
  - use Chocolatey to install Python environment on Windows,
- - use a pure Bash script because it is the shell available on all operating
-   systems available on Travis CI,
+ - use a pure Bash script because it is the shell commonly available on all
+   operating systems available on Travis CI,
  - use a Bash 3.2 compatible script because it is the one available on macOS.
+
+Running tests
+-------------
+
+Use [shellspec][shellspec] to run unit tests:
+
+```bash
+shellspec
+```
 
 Contributing
 ------------
@@ -145,7 +149,7 @@ Contributing
 If you're facing an issue using `travis-python`, please look at
 [the existing tickets][issues]. Then you may open a new one.
 
-You may also make a [push request][pull-requests] to help improve it.
+You may also make a [pull request][pull-requests] to help improve it.
 
 License
 -------
@@ -161,3 +165,4 @@ License
 [pull-requests]: https://github.com/neimad/travis-python/pulls
 [GPL]: https://www.gnu.org/licenses/gpl.html
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
+[shellspec]: https://shellspec.info

@@ -5,16 +5,18 @@ os:
   - osx
   - windows
 
-osx_image: xcode11
-
 env:
   - PYTHON="3.7"
   - PYTHON="3.6"
+  - PYTHON="3"
+  - PYTHON="2"
+
+install:
+  - curl -sSL https://git.io/shellspec | sh -s -- -y
+
+before_script:
+  - shellspec --syntax-check
 
 script:
-  - source travis-python.bash
-  - install_python $CACHE/Python $PYTHON
-
-cache:
-  directories:
-    - $CACHE
+  - shellspec spec/units
+  - shellspec spec/integration
