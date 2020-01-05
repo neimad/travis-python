@@ -1,6 +1,6 @@
 #shellcheck shell=bash
 
-Include ./travis-python
+Include ./travis-python.bash
 
 Describe "print_info()"
     It "fails when the message is not specified"

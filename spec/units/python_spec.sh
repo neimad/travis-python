@@ -1,6 +1,6 @@
 #shellcheck shell=bash
 
-Include ./travis-python
+Include ./travis-python.bash
 
 Describe "current_python_version()"
     It "gets the version from Python output"

@@ -1,6 +1,6 @@
 #shellcheck shell=bash
 
-Include ./travis-python
+Include ./travis-python.bash
 
 Describe "available_python_versions_with_chocolatey()"
     It "gets the list of available versions from Chocolatey"

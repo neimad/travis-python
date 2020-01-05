@@ -1,6 +1,6 @@
 #shellcheck shell=bash
 
-Include ./travis-python
+Include ./travis-python.bash
 
 Describe "latest_git_tag()"
     It "fails when the directory is not specified"

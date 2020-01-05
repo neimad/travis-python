@@ -1,6 +1,6 @@
 #shellcheck shell=bash
 
-Include ./travis-python
+Include ./travis-python.bash
 
 Describe "latest_matching_version()"
     It "fails when the specifier is not specified"
