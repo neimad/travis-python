@@ -5,6 +5,9 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 [![Build Status][ci-badge]][ci]
 [![License][license-badge]][license]
 
+> :warning: This project is under development and not stable at all! Please
+> wait for the first stable version before using it in production.
+
 _travis-python_ is just a Bash script providing a helper function:
 
 ```bash
