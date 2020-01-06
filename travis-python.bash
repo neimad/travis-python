@@ -1,5 +1,3 @@
-#! /usr/bin/env bash
-
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
 # set -euo pipefail
 # IFS=$'\n\t'
@@ -313,15 +311,15 @@ install_python() {
     print_success "Installed Python $(current_python_version)."
 }
 
-setup() {
-    # setup <directory>
+__travis_python_setup() {
+    # __travis_python_setup
     #
     # Setups Python tools for Travis CI for installation within specified
     # directory.
     #
-    local -r directory=${1:?the installation directory must be specified}
-
     : "${TRAVIS_OS_NAME:?must be set and not null}"
+
+    print_info "travis-python $TRAVIS_PYTHON_VERSION"
 
     case ${TRAVIS_OS_NAME} in
         windows)
@@ -330,28 +328,17 @@ setup() {
             print_success "Installed Chocolatey $(choco --version)."
             ;;
         linux | osx)
-            install_pyenv "$directory"
+            install_pyenv "$HOME/Pyenv"
             ;;
         *)
             print_error "The '$TRAVIS_OS_NAME' platform is not supported."
             return 1
             ;;
     esac
+
+    print_success "Python tools for Travis CI loaded."
 }
 
 ${__SOURCED__:+'return'} # Prevent execution while testing
 
-if (($# != 2)); then
-    cat <<USAGE
-usage: travis-python <location> <specifier>
-
-  location      The directory to install the Python distribution.
-  specifier     A version specifier.
-USAGE
-    exit 1
-fi
-
-echo "travis-python $TRAVIS_PYTHON_VERSION"
-echo "Python tools for Travis CI."
-setup "$1"
-install_python "$1" "$2"
+__travis_python_setup
