@@ -133,6 +133,35 @@ foo"
     End
 End
 
+Describe "dummy()"
+    It "fails when the program is not specified"
+        When run dummy
+        The status should be failure
+        The error should end with "the program must be specified"
+    End
+
+    It "fails when the program is empty"
+        When run dummy ""
+        The status should be failure
+        The error should end with "the program must be specified"
+    End
+
+    foo() {
+        echo "FOO"
+        echo "BAR" >&2
+        return 42
+    }
+
+    It "makes the program do nothing"
+        dummy 'foo'
+
+        When call foo
+        The output should be blank
+        The error should be blank
+        The status should be success
+    End
+End
+
 Describe "stub()"
     It "fails when the program is not specified"
         When run stub

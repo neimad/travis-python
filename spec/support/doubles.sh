@@ -7,6 +7,16 @@
 export SPY_DIR="$SHELLSPEC_TMPBASE/spy"
 mkdir -p "$SPY_DIR"
 
+dummy() {
+    # dummy <program>
+    #
+    # Creates a dummy for the specified program.
+    # It outputs nothing and returns 0.
+    local -r program=${1:?the program must be specified}
+
+    stub "$program"
+}
+
 stub() {
     # stub <program> [-o <output>] [-e <error>] [-s <status>]
     #

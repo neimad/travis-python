@@ -32,7 +32,7 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "shows the tool version"
-            stub 'install_pyenv'
+            dummy 'install_pyenv'
 
             When call __travis_python_setup "foo"
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
@@ -51,7 +51,7 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "shows the tool version"
-            stub 'install_pyenv'
+            dummy 'install_pyenv'
 
             When call __travis_python_setup "foo"
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
@@ -70,7 +70,7 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=windows"
 
         It "shows the tool version"
-            stub 'choco'
+            dummy 'choco'
 
             When call __travis_python_setup "foo"
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
