@@ -3,7 +3,7 @@ language: shell
 os:
   - linux
   - osx
-  - windows
+  # - windows
 
 env:
   - PYTHON="3.7"
