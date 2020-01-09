@@ -68,21 +68,15 @@ windows_path() {
     #
     local -r path=${1:?the path must be specified}
     local converted
-    local parts
+    local drive_letter
 
     # Convert slashes to backslashes
     converted=${path//\//\\}
 
     if [[ $converted == \\* ]]; then
         # If it is an absolute path, convert the first component to a drive letter
-        IFS=\\ read -ra parts <<<"$converted"
-        unset "parts[0]"
-        parts[1]="${parts[1]^}:"
-
-        OLDIFS=$IFS
-        IFS=\\
-        converted=${parts[*]}
-        IFS=$OLDIFS
+        drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}" )
+        converted="$drive_letter:${converted:2}"
     fi
 
     echo "$converted"
@@ -102,6 +96,7 @@ latest_matching_version() {
     shift
     local versions=("${@:?the versions must be specified}")
     local found_version=""
+    local IFS
 
     if ((${#versions} == 0)); then
         echo "the versions must not be empty" >&2
@@ -209,6 +204,7 @@ available_python_versions_with_pyenv() {
     #
     local versions
     local versions=()
+    local IFS
 
     while IFS='' read -r version; do
         version=$(trim "$version")
