@@ -11,6 +11,11 @@ env:
   - PYTHON="3"
   - PYTHON="2"
 
+addons:
+  homebrew:
+    packages:
+      - kcov
+
 install:
   - curl -sSL https://git.io/shellspec | sh -s -- -y
 
@@ -18,5 +23,6 @@ before_script:
   - shellspec --syntax-check
 
 script:
-  - shellspec spec/units
-  # - shellspec spec/integration
+  - if [ $TRAVIS_OS_NAME = osx ]; then SHELLSPEC_FLAGS="--kcov"; fi
+  - shellspec $SHELLSPEC_FLAGS spec/units
+  # - shellspec $SHELLSPEC_FLAGS spec/integration
