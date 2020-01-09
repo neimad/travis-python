@@ -25,4 +25,4 @@ before_script:
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then SHELLSPEC_FLAGS="--kcov"; fi
   - shellspec $SHELLSPEC_FLAGS spec/units
-  # - shellspec $SHELLSPEC_FLAGS spec/integration
+  - shellspec $SHELLSPEC_FLAGS spec/integration
