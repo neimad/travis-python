@@ -140,7 +140,7 @@ To solve those problems, some directions have been taken:
 Running tests
 -------------
 
-Use [shellspec][shellspec] to run unit tests:
+Use [shellspec] to run unit tests:
 
 ```bash
 shellspec
@@ -149,23 +149,29 @@ shellspec
 Contributing
 ------------
 
-If you're facing an issue using `travis-python`, please look at
-[the existing tickets][issues]. Then you may open a new one.
+If you're facing an issue using `travis-python`, please [look at the existing
+tickets]. Then you may open a new one.
 
-You may also make a [pull request][pull-requests] to help improve it.
+You may also [make a pull request] to help improve it.
+
+Changelog
+---------
+
+See [the changelog] to see what changes have been made and what you can expect
+in the next release.
 
 License
 -------
 
-`travis-python` is licensed under the [GNU GPL 3][GPL] or later.
+`travis-python` is licensed under the [GNU GPL 3 or later].
 
 [ci]: https://travis-ci.org/neimad/travis-python
 [ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
 [license]: https://github.com/neimad/travis-python/blob/master/LICENSE.md
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
-[repository]: https://github.com/neimad/travis-python
-[issues]: https://github.com/neimad/travis-python/issues
-[pull-requests]: https://github.com/neimad/travis-python/pulls
-[GPL]: https://www.gnu.org/licenses/gpl.html
+[look at the existing tickets]: https://github.com/neimad/travis-python/issues
+[make a pull request]: https://github.com/neimad/travis-python/pulls
+[the changelog]: h
+[GNU GPL 3 or later]: https://www.gnu.org/licenses/gpl.html
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
 [shellspec]: https://shellspec.info
