@@ -131,7 +131,7 @@ available on Travis CI, we have to deal with many issues:
 
 To solve those problems, some directions have been taken:
 
- - use Pyenv to install Python environment on Linux and macOS,
+ - use python-build from Pyenv to install Python environment on Linux and macOS,
  - use Chocolatey to install Python environment on Windows,
  - use a pure Bash script because it is the shell commonly available on all
    operating systems available on Travis CI,

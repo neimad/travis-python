@@ -6,7 +6,7 @@ Describe "setup()"
     It "needs the TRAVIS_OS_NAME environment variable to be set"
         unset TRAVIS_OS_NAME
 
-        When run __travis_python_setup "foo"
+        When run __travis_python_setup
         The status should be failure
         The error should end with "TRAVIS_OS_NAME: must be set and not null"
     End
@@ -14,7 +14,7 @@ Describe "setup()"
     It "needs the TRAVIS_OS_NAME environment variable to be not null"
         export TRAVIS_OS_NAME=
 
-        When run __travis_python_setup "foo"
+        When run __travis_python_setup
         The status should be failure
         The error should end with "TRAVIS_OS_NAME: must be set and not null"
     End
@@ -22,7 +22,7 @@ Describe "setup()"
     It "fails when the platform is not supported"
         export TRAVIS_OS_NAME=bar
 
-        When call __travis_python_setup "foo"
+        When call __travis_python_setup
         The status should be failure
         The error should include "The 'bar' platform is not supported"
         The output should not be blank
@@ -32,17 +32,17 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "shows the tool version"
-            dummy 'install_pyenv'
+            dummy 'install_builder'
 
-            When call __travis_python_setup "foo"
+            When call __travis_python_setup
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
         End
 
-        It "installs Pyenv"
-            spy 'install_pyenv'
+        It "installs python-build"
+            spy 'install_builder'
 
-            When call __travis_python_setup "foo"
-            The command "install_pyenv $HOME/Pyenv" should be called
+            When call __travis_python_setup
+            The command "install_builder $HOME/travis-python/builder" should be called
             The output should not be blank
         End
     End
@@ -51,17 +51,17 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "shows the tool version"
-            dummy 'install_pyenv'
+            dummy 'install_builder'
 
-            When call __travis_python_setup "foo"
+            When call __travis_python_setup
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
         End
 
-        It "installs Pyenv"
-            spy 'install_pyenv'
+        It "installs python-build"
+            spy 'install_builder'
 
-            When call __travis_python_setup "foo"
-            The command "install_pyenv $HOME/Pyenv" should be called
+            When call __travis_python_setup
+            The command "install_builder $HOME/travis-python/builder" should be called
             The output should not be blank
         End
     End
@@ -72,14 +72,14 @@ Describe "setup()"
         It "shows the tool version"
             dummy 'choco'
 
-            When call __travis_python_setup "foo"
+            When call __travis_python_setup
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs Chocolatey 0.10.13"
             spy 'choco'
 
-            When call __travis_python_setup "foo"
+            When call __travis_python_setup
             The command "choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade" should be called
             The output should not be blank
         End

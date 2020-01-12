@@ -3,6 +3,7 @@
 # IFS=$'\n\t'
 
 TRAVIS_PYTHON_VERSION="0.1.0"
+TRAVIS_PYTHON_DIR="$HOME/travis-python"
 
 print_info() {
     # print_info <message>
@@ -155,52 +156,53 @@ update_git_repo() {
     git -C "$directory" checkout "$latest_tag" --detach --quiet
 }
 
-current_pyenv_version() {
-    # current_pyenv_version
+current_builder_version() {
+    # current_builder_version
     #
-    # Gives the current version of Pyenv.
+    # Gives the current version of python-build.
     #
     local version
 
-    version=$(pyenv --version)
-    version="${version#'pyenv'}"
+    version=$(python-build --version)
+    version="${version#'python-build'}"
     version=$(trim "$version")
 
     echo "$version"
 }
 
-install_pyenv() {
-    # install_pyenv <directory>
+install_builder() {
+    # install_builder <directory>
     #
-    # Installs pyenv to the specified directory.
+    # Installs python-build to the specified directory.
     #
     # The pyenv distribution is cloned from its Git repository and the latest
-    # release is fetched.
+    # release is fetched. Then, python-build is installed as a standalone
+    # program in the specified directory.
     #
-    # The `PATH` is updated to include the pyenv distribution and the shell
+    # The `PATH` is updated to include the `bin` directory and the shell
     # commands hash table is reset.
-    #
-    # The `PYENV_ROOT` environment variable is set to LOCATION.
     #
     local directory=${1:?the installation directory must be specified}
     local -r repo_url="https://github.com/pyenv/pyenv"
-    export PYENV_ROOT
+    local -r clone_directory="/tmp/pyenv"
+    local -r installer="$clone_directory/plugins/python-build/install.sh"
     export PATH
 
-    print_info "Installing latest Pyenv to $directory..."
-    update_git_repo $repo_url "$directory" || return
+    print_info "Installing latest python-build to $directory..."
+    update_git_repo $repo_url $clone_directory
 
-    PYENV_ROOT=$directory
-    PATH="$PYENV_ROOT/bin:$PYENV_ROOT/shims:$PATH"
+    PREFIX=$directory $installer
+
+    PATH="$directory/bin:$PATH"
     hash -r
 
-    print_success "Installed Pyenv $(current_pyenv_version)."
+    print_success "Installed python-build $(current_builder_version)."
 }
 
-available_python_versions_with_pyenv() {
-    # available_python_versions_with_pyenv
+available_python_versions_with_builder() {
+    # available_python_versions_with_builder
     #
-    # Gives the list of Python versions available via pyenv.
+    # Gives the list of Python versions available via python-build.
     #
     local versions
     local versions=()
@@ -212,7 +214,7 @@ available_python_versions_with_pyenv() {
         if [[ -n $version ]]; then
             versions=("${versions[@]}" "$version")
         fi
-    done < <(pyenv install --list)
+    done < <(python-build --definitions)
 
     echo "${versions[@]}"
 }
@@ -276,7 +278,7 @@ install_python() {
         available_versions=($(available_python_versions_with_chocolatey))
     else
         # shellcheck disable=SC2207
-        available_versions=($(available_python_versions_with_pyenv))
+        available_versions=($(available_python_versions_with_builder))
     fi
 
     version=$(latest_matching_version "$specifier" "${available_versions[@]}")
@@ -297,12 +299,12 @@ install_python() {
             --apply-install-arguments-to-dependencies
 
         PATH="$location:$location/Scripts:$PATH"
-        hash -r
     else
-        pyenv install --skip-existing "$version" &>/dev/null
-        pyenv global "$version"
-        pyenv rehash
+        python-build "$version" "$location" &>/dev/null
+        PATH="$location/bin:$PATH"
     fi
+
+    hash -r
 
     print_success "Installed Python $(current_python_version)."
 }
@@ -324,7 +326,7 @@ __travis_python_setup() {
             print_success "Installed Chocolatey $(choco --version)."
             ;;
         linux | osx)
-            install_pyenv "$HOME/Pyenv"
+            install_builder "$TRAVIS_PYTHON_DIR/builder"
             ;;
         *)
             print_error "The '$TRAVIS_OS_NAME' platform is not supported."

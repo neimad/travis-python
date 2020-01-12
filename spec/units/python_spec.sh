@@ -58,34 +58,38 @@ Describe "install_python()"
     Context "when on a Linux platform"
         Before "TRAVIS_OS_NAME=linux"
 
-        It "installs Python using Pyenv"
-            stub 'available_python_versions_with_pyenv' -o "2.6.4 3.7.1 3.7.2"
+        It "installs Python using python-build"
+            stub 'available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
             stub 'current_python_version' -s 0 -o "3.7.2"
+            spy 'python-build'
             spy 'pyenv'
+
 
             When call install_python "$directory" "3.7"
             The line 1 of output should equal "Installing Python 3.7.2..."
-            The command "pyenv install --skip-existing 3.7.2" should be called
-            The command "pyenv global 3.7.2" should be called
-            The command "pyenv rehash" should be called
+            The command "python-build 3.7.2 $directory" should be called
+            The command "pyenv" should not be called
             The line 2 of output should equal "Installed Python 3.7.2."
+            The variable PATH should start with "$directory/bin:"
         End
     End
 
     Context "when on a macOS platform"
         Before "TRAVIS_OS_NAME=osx"
 
-        It "installs Python using Pyenv"
-            stub 'available_python_versions_with_pyenv' -o "2.6.4 3.7.1 3.7.2"
+        It "installs Python using python-build"
+            stub 'available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
             stub 'current_python_version' -s 0 -o "3.7.2"
+            spy 'python-build'
             spy 'pyenv'
+
 
             When call install_python "$directory" "3.7"
             The line 1 of output should equal "Installing Python 3.7.2..."
-            The command "pyenv install --skip-existing 3.7.2" should be called
-            The command "pyenv global 3.7.2" should be called
-            The command "pyenv rehash" should be called
+            The command "python-build 3.7.2 $directory" should be called
+            The command "pyenv" should not be called
             The line 2 of output should equal "Installed Python 3.7.2."
+            The variable PATH should start with "$directory/bin:"
         End
     End
 

@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning].
  - Specification which is checked using Shellspec.
  - Unit tests helper to create dummies.
 
+### Changed
+ - Switch from _pyenv_ to _python-build_ for Python distribution installation
+   on Linux and macOS.
+
 ### Fixed
  - Windows path conversion on Bash 3.2.
 
