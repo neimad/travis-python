@@ -173,7 +173,7 @@ License
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
-[the changelog]: h
-[GNU GPL 3 or later]: https://www.gnu.org/licenses/gpl.html
+[the changelog]: CHANGELOG.md
+[GNU GPL 3 or later]: LICENSE.md
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
 [shellspec]: https://shellspec.info
