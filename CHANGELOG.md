@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+
+## [0.1.2] - 2020-01-13
 ### Fixed
- - Recommended way of sourcing the `travis-python.bash` script.
+ - Recommended way of sourcing the `travis-python.bash` script (#2).
+ - Unstable versions filtering (#3).
 
 ## [0.1.1] - 2020-01-12
 ### Added
@@ -29,8 +32,9 @@ and this project adheres to [Semantic Versioning].
  - README file containing information about the expected UX and the initial
    direction of the project.
 
-[Unreleased]: https://github.com/neimad/travis-python/compare/0.1.1...HEAD
-[0.1.1]: https://github.com/neimad/travis-python/releases/tag/0.1.1
+[Unreleased]: https://github.com/neimad/travis-python/compare/0.1.2...HEAD
+[0.1.2]: https://github.com/neimad/travis-python/compare/0.1.1...0.1.2
+[0.1.1]: https://github.com/neimad/travis-python/compare/0.1.0...0.1.1
 [0.1.0]: https://github.com/neimad/travis-python/releases/tag/0.1.0
 [Keep a Changelog]: https://keepachangelog.com/en/1.0.0/
 [Semantic Versioning]: https://semver.org/spec/v2.0.0.html

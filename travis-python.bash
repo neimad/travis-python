@@ -4,7 +4,7 @@
 # set -euo pipefail
 # IFS=$'\n\t'
 
-TRAVIS_PYTHON_VERSION="0.1.0"
+TRAVIS_PYTHON_VERSION="0.1.2"
 TRAVIS_PYTHON_DIR="$HOME/travis-python"
 
 __print_info() {
