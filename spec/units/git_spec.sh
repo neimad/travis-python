@@ -50,6 +50,7 @@ Describe "__update_git_repo()"
 
     Before 'setup_directory'
     After 'cleanup_directory'
+    directory=${directory:-}
 
     It "clones a new repository"
         cleanup_directory
