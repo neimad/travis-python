@@ -42,7 +42,7 @@ Describe "__available_python_versions_with_builder()"
         The output should be blank
     End
 
-    It "filters the ouput of the pyenv command"
+    It "filters the ouput of the python-build command"
         python-build() {
             echo $'   2.3.1\t\n'
             echo $'\t\t3.7.6                     '
@@ -68,7 +68,7 @@ Describe "__current_builder_version()"
         The output should be blank
     End
 
-    It "gives the current version of Pyenv"
+    It "gives the current version of python-build"
         stub 'python-build' -o "python-build 20200205"
 
         When call __current_builder_version
