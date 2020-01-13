@@ -92,6 +92,8 @@ __latest_matching_version() {
     # specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
     #
+    # Only stable versions are considered ()
+    #
     local -r specifier=${1:?the specifier must be specified}
     local -r specifier_pattern=${specifier//./"\."}
     shift
@@ -110,8 +112,7 @@ __latest_matching_version() {
     shopt -s extglob
 
     for version in "${versions[@]}"; do
-        # if [[ $version == ${specifier}*(.+([0-9])) ]]; then
-        if [[ $version =~ ^${specifier_pattern}(\.[:digit:]+)* ]]; then
+        if [[ $version =~ ^${specifier_pattern}(\.[[:digit:]]+)*$ ]]; then
             found_version="$version"
         fi
     done

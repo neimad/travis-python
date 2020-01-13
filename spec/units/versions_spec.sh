@@ -2,7 +2,7 @@
 
 Include ./travis-python.bash
 
-Describe "__latest_matching_version()"
+fDescribe "__latest_matching_version()"
     It "fails when the specifier is not specified"
         When run __latest_matching_version
         The status should be failure
@@ -36,6 +36,21 @@ Describe "__latest_matching_version()"
     It "sorts versions naturally"
         When call __latest_matching_version "1.1" "1.1.8" "1.1.9" "1.1.10"
         The output should equal "1.1.10"
+    End
+
+    It "filters development versions"
+        When call __latest_matching_version "3.7" "3.7.5" "3.7-dev"
+        The output should equal "3.7.5"
+    End
+
+    It "filters release candidates"
+        When call __latest_matching_version "3.7" "3.7.6" "3.7.6rc1" "3.7.6rc2"
+        The output should equal "3.7.6"
+    End
+
+    It "filters sources versions"
+        When call __latest_matching_version "pypy-5.7" "pypy-5.7.1" "pypy-5.7.1-src"
+        The output should equal "pypy-5.7.1"
     End
 
     Parameters
