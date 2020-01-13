@@ -2,59 +2,59 @@
 
 Include ./travis-python.bash
 
-Describe "print_info()"
+Describe "__print_info()"
     It "fails when the message is not specified"
-        When run print_info
+        When run __print_info
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "fails when the message is empty"
-        When run print_info ""
+        When run __print_info ""
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "prints a message to standard output"
-        When call print_info  "message"
+        When call __print_info  "message"
         The output should equal "message"
     End
 End
 
-Describe "print_success()"
+Describe "__print_success()"
     It "fails when the message is not specified"
-        When run print_success
+        When run __print_success
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "fails when the message is empty"
-        When run print_success ""
+        When run __print_success ""
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "prints a message to standard output"
-        When call print_success  "message"
+        When call __print_success  "message"
         The output should equal "message"
     End
 End
 
-Describe "print_error()"
+Describe "__print_error()"
     It "fails when the message is not specified"
-        When run print_error
+        When run __print_error
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "fails when the message is empty"
-        When run print_error ""
+        When run __print_error ""
         The status should be failure
         The error should end with "the message must be specified"
     End
 
     It "prints a message to standard error"
-        When call print_error "message"
+        When call __print_error "message"
         The status should be failure
         The error should equal "message"
     End

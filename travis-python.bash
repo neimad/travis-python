@@ -5,8 +5,8 @@
 TRAVIS_PYTHON_VERSION="0.1.0"
 TRAVIS_PYTHON_DIR="$HOME/travis-python"
 
-print_info() {
-    # print_info <message>
+__print_info() {
+    # __print_info <message>
     #
     # Prints the given message to the standard ouput stream in cyan.
     #
@@ -19,8 +19,8 @@ print_info() {
     echo -e "$message"
 }
 
-print_success() {
-    # print_success <message>
+__print_success() {
+    # __print_success <message>
     #
     # Prints the given message to the standard ouput stream in green.
     #
@@ -33,8 +33,8 @@ print_success() {
     echo -e "$message"
 }
 
-print_error() {
-    # print_error <message>
+__print_error() {
+    # __print_error <message>
     #
     # Prints the given error message to the standard error stream in red.
     #
@@ -48,8 +48,8 @@ print_error() {
     return 1
 }
 
-trim() {
-    # trim <string>
+__trim() {
+    # __trim <string>
     #
     # Trims leading and trailing whitespace characters from given string.
     #
@@ -62,8 +62,8 @@ trim() {
     echo "$string"
 }
 
-windows_path() {
-    # windows_path <path>
+__windows_path() {
+    # __windows_path <path>
     #
     # Converts a Unix path to Windows flavor.
     #
@@ -83,8 +83,8 @@ windows_path() {
     echo "$converted"
 }
 
-latest_matching_version() {
-    # latest_matching_version <specifier> <version>...
+__latest_matching_version() {
+    # __latest_matching_version <specifier> <version>...
     #
     # Gives the latest version matching the specifier from a list of versions.
     #
@@ -121,8 +121,8 @@ latest_matching_version() {
     echo "$found_version"
 }
 
-latest_git_tag() {
-    # latest_git_tag <directory>
+__latest_git_tag() {
+    # __latest_git_tag <directory>
     #
     # Gives the latest tag from the Git repsitory located at the specified
     # directory.
@@ -132,8 +132,8 @@ latest_git_tag() {
     git -C "$directory" describe --abbrev=0 --tags
 }
 
-update_git_repo() {
-    # update_git_repo <URL> <directory>
+__update_git_repo() {
+    # __update_git_repo <URL> <directory>
     #
     # Updates the Git repository located at the specified directory from the
     # specified URL.
@@ -152,12 +152,12 @@ update_git_repo() {
         git -C "$directory" fetch
     fi
 
-    latest_tag=$(latest_git_tag "$directory")
+    latest_tag=$(__latest_git_tag "$directory")
     git -C "$directory" checkout "$latest_tag" --detach --quiet
 }
 
-current_builder_version() {
-    # current_builder_version
+__current_builder_version() {
+    # __current_builder_version
     #
     # Gives the current version of python-build.
     #
@@ -165,13 +165,13 @@ current_builder_version() {
 
     version=$(python-build --version)
     version="${version#'python-build'}"
-    version=$(trim "$version")
+    version=$(__trim "$version")
 
     echo "$version"
 }
 
-install_builder() {
-    # install_builder <directory>
+__install_builder() {
+    # __install_builder <directory>
     #
     # Installs python-build to the specified directory.
     #
@@ -188,19 +188,19 @@ install_builder() {
     local -r installer="$clone_directory/plugins/python-build/install.sh"
     export PATH
 
-    print_info "Installing latest python-build to $directory..."
-    update_git_repo $repo_url $clone_directory
+    __print_info "Installing latest python-build to $directory..."
+    __update_git_repo $repo_url $clone_directory
 
     PREFIX=$directory $installer
 
     PATH="$directory/bin:$PATH"
     hash -r
 
-    print_success "Installed python-build $(current_builder_version)."
+    __print_success "Installed python-build $(__current_builder_version)."
 }
 
-available_python_versions_with_builder() {
-    # available_python_versions_with_builder
+__available_python_versions_with_builder() {
+    # __available_python_versions_with_builder
     #
     # Gives the list of Python versions available via python-build.
     #
@@ -209,7 +209,7 @@ available_python_versions_with_builder() {
     local IFS
 
     while IFS='' read -r version; do
-        version=$(trim "$version")
+        version=$(__trim "$version")
 
         if [[ -n $version ]]; then
             versions=("${versions[@]}" "$version")
@@ -219,8 +219,8 @@ available_python_versions_with_builder() {
     echo "${versions[@]}"
 }
 
-available_python_versions_with_chocolatey() {
-    # available_python_versions_with_chocolatey
+__available_python_versions_with_chocolatey() {
+    # __available_python_versions_with_chocolatey
     #
     # Gives the list of Python versions available via Chocolatey.
     #
@@ -231,7 +231,7 @@ available_python_versions_with_chocolatey() {
     output=$(choco list python --exact --all-versions --limit-output)
 
     while read -r version; do
-        version=$(trim "$version")
+        version=$(__trim "$version")
         version="${version#'python|'}"
 
         if [[ -n $version ]]; then
@@ -242,8 +242,8 @@ available_python_versions_with_chocolatey() {
     echo "${versions[@]}"
 }
 
-current_python_version() {
-    # current_python_version
+__current_python_version() {
+    # __current_python_version
     #
     # Gives the current version of Python.
     #
@@ -251,7 +251,7 @@ current_python_version() {
 
     version=$(python --version 2>&1)
     version="${version#'Python'}"
-    version=$(trim "$version")
+    version=$(__trim "$version")
 
     echo "$version"
 }
@@ -275,26 +275,26 @@ install_python() {
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         # shellcheck disable=SC2207
-        available_versions=($(available_python_versions_with_chocolatey))
+        available_versions=($(__available_python_versions_with_chocolatey))
     else
         # shellcheck disable=SC2207
-        available_versions=($(available_python_versions_with_builder))
+        available_versions=($(__available_python_versions_with_builder))
     fi
 
-    version=$(latest_matching_version "$specifier" "${available_versions[@]}")
+    version=$(__latest_matching_version "$specifier" "${available_versions[@]}")
 
     if [[ -z $version ]]; then
-        print_error "No Python version found matching $specifier"
+        __print_error "No Python version found matching $specifier"
         return 1
     fi
 
-    print_info "Installing Python $version..."
+    __print_info "Installing Python $version..."
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         choco install python \
             --version="$version" \
             --yes \
-            --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(windows_path "$location")\"" \
+            --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(__windows_path "$location")\"" \
             --override-arguments \
             --apply-install-arguments-to-dependencies
 
@@ -306,7 +306,7 @@ install_python() {
 
     hash -r
 
-    print_success "Installed Python $(current_python_version)."
+    __print_success "Installed Python $(__current_python_version)."
 }
 
 __travis_python_setup() {
@@ -317,24 +317,24 @@ __travis_python_setup() {
     #
     : "${TRAVIS_OS_NAME:?must be set and not null}"
 
-    print_info "travis-python $TRAVIS_PYTHON_VERSION"
+    __print_info "travis-python $TRAVIS_PYTHON_VERSION"
 
     case ${TRAVIS_OS_NAME} in
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
             choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
-            print_success "Installed Chocolatey $(choco --version)."
+            __print_success "Installed Chocolatey $(choco --version)."
             ;;
         linux | osx)
-            install_builder "$TRAVIS_PYTHON_DIR/builder"
+            __install_builder "$TRAVIS_PYTHON_DIR/builder"
             ;;
         *)
-            print_error "The '$TRAVIS_OS_NAME' platform is not supported."
+            __print_error "The '$TRAVIS_OS_NAME' platform is not supported."
             return 1
             ;;
     esac
 
-    print_success "Python tools for Travis CI loaded."
+    __print_success "Python tools for Travis CI loaded."
 }
 
 ${__SOURCED__:+'return'} # Prevent execution while testing

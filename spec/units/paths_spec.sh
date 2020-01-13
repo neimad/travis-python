@@ -2,15 +2,15 @@
 
 Include ./travis-python.bash
 
-Describe "windows_path()"
+Describe "__windows_path()"
     It "fails when the path is not specified"
-        When run windows_path
+        When run __windows_path
         The status should be failure
         The error should end with "the path must be specified"
     End
 
     It "fails when the path is empty"
-        When run windows_path ""
+        When run __windows_path ""
         The status should be failure
         The error should end with "the path must be specified"
     End
@@ -25,7 +25,7 @@ Describe "windows_path()"
         End
 
         It "keeps untouched $1"
-            When call windows_path "$2"
+            When call __windows_path "$2"
             The output should equal "$2"
         End
     End
@@ -39,7 +39,7 @@ Describe "windows_path()"
     End
 
     It "converts $1 to Windows flavor"
-        When call windows_path "$2"
+        When call __windows_path "$2"
         The output should equal "$3"
     End
 End

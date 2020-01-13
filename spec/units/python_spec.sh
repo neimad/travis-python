@@ -2,11 +2,11 @@
 
 Include ./travis-python.bash
 
-Describe "current_python_version()"
+Describe "__current_python_version()"
     It "gets the version from Python output"
         spy 'python'
 
-        When call current_python_version
+        When call __current_python_version
         The command "python --version" should be called
         The output should be blank
     End
@@ -14,14 +14,14 @@ Describe "current_python_version()"
     It "gives the current version of Python"
         stub 'python' -o "Python 3.7.2"
 
-        When call current_python_version
+        When call __current_python_version
         The output should equal "3.7.2"
     End
 
     It "gives the current version of Python 2"
         stub 'python' -e "Python 2.7.2"
 
-        When call current_python_version
+        When call __current_python_version
         The output should equal "2.7.2"
     End
 End
@@ -59,8 +59,8 @@ Describe "install_python()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "installs Python using python-build"
-            stub 'available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
-            stub 'current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
+            stub '__current_python_version' -s 0 -o "3.7.2"
             spy 'python-build'
             spy 'pyenv'
 
@@ -78,8 +78,8 @@ Describe "install_python()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "installs Python using python-build"
-            stub 'available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
-            stub 'current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
+            stub '__current_python_version' -s 0 -o "3.7.2"
             spy 'python-build'
             spy 'pyenv'
 
@@ -98,8 +98,8 @@ Describe "install_python()"
 
         It "installs Python using Chocolatey"
             spy 'choco'
-            stub 'available_python_versions_with_chocolatey' -o "2.6.4 3.7.1 3.7.2"
-            stub 'current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions_with_chocolatey' -o "2.6.4 3.7.1 3.7.2"
+            stub '__current_python_version' -s 0 -o "3.7.2"
 
             When call install_python "$directory" "3.7"
             The line 1 of output should equal "Installing Python 3.7.2..."

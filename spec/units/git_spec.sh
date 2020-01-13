@@ -2,15 +2,15 @@
 
 Include ./travis-python.bash
 
-Describe "latest_git_tag()"
+Describe "__latest_git_tag()"
     It "fails when the directory is not specified"
-        When run latest_git_tag
+        When run __latest_git_tag
         The status should be failure
         The error should end with "the directory must be specified"
     End
 
     It "fails when the directory name is empty string"
-        When run latest_git_tag ""
+        When run __latest_git_tag ""
         The status should be failure
         The error should end with "the directory must be specified"
     End
@@ -18,32 +18,32 @@ Describe "latest_git_tag()"
     It "asks Git for the latest tag"
         spy 'git'
 
-        When run latest_git_tag "foo"
+        When run __latest_git_tag "foo"
         The command "git -C foo describe --abbrev=0 --tags" should be called
     End
 End
 
-Describe "update_git_repo()"
+Describe "__update_git_repo()"
     It "fails when the URL is not specified"
-        When run update_git_repo
+        When run __update_git_repo
         The status should be failure
         The error should end with "the URL must be specified"
     End
 
     It "fails when the URL is empty"
-        When run update_git_repo ""
+        When run __update_git_repo ""
         The status should be failure
         The error should end with "the URL must be specified"
     End
 
     It "fails when the directory is not specified"
-        When run update_git_repo "https://foo"
+        When run __update_git_repo "https://foo"
         The status should be failure
         The error should end with "the directory must be specified"
     End
 
     It "fails when the directory name is empty string"
-        When run update_git_repo "https://foo" ""
+        When run __update_git_repo "https://foo" ""
         The status should be failure
         The error should end with "the directory must be specified"
     End
@@ -55,23 +55,23 @@ Describe "update_git_repo()"
         cleanup_directory
         spy 'git'
 
-        When call update_git_repo 'https://foo' "$directory"
+        When call __update_git_repo 'https://foo' "$directory"
         The command "git clone https://foo $directory" should be called
     End
 
     It "updates an existing repository"
         spy 'git'
 
-        When call update_git_repo 'https://foo' "$directory"
+        When call __update_git_repo 'https://foo' "$directory"
         The command "git -C $directory fetch" should be called
         The command "git clone" should not be called
     End
 
     It "loads the latest tag"
-        stub 'latest_git_tag' -o '1.2.3' -s 25
+        stub '__latest_git_tag' -o '1.2.3' -s 25
         spy 'git'
 
-        When call update_git_repo 'https://foo' "$directory"
+        When call __update_git_repo 'https://foo' "$directory"
         The command "git -C $directory checkout 1.2.3" should be called
     End
 End

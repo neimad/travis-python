@@ -32,17 +32,17 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "shows the tool version"
-            dummy 'install_builder'
+            dummy '__install_builder'
 
             When call __travis_python_setup
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
-            spy 'install_builder'
+            spy '__install_builder'
 
             When call __travis_python_setup
-            The command "install_builder $HOME/travis-python/builder" should be called
+            The command "__install_builder $HOME/travis-python/builder" should be called
             The output should not be blank
         End
     End
@@ -51,17 +51,17 @@ Describe "setup()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "shows the tool version"
-            dummy 'install_builder'
+            dummy '__install_builder'
 
             When call __travis_python_setup
             The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
-            spy 'install_builder'
+            spy '__install_builder'
 
             When call __travis_python_setup
-            The command "install_builder $HOME/travis-python/builder" should be called
+            The command "__install_builder $HOME/travis-python/builder" should be called
             The output should not be blank
         End
     End

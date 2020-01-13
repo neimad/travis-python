@@ -2,20 +2,20 @@
 
 Include ./travis-python.bash
 
-Describe "trim()"
+Describe "__trim()"
     It "fails when the string is not specified"
-        When run trim
+        When run __trim
         The status should be failure
         The error should end with "the string must be specified"
     End
 
     It "keeps an empty string untouched"
-        When call trim ""
+        When call __trim ""
         The output should equal ""
     End
 
     It "does not remove spaces within a string"
-        When call trim $'stri \t\nng'
+        When call __trim $'stri \t\nng'
         The output should equal $'stri \t\nng'
     End
 
@@ -36,7 +36,7 @@ Describe "trim()"
 
 
     It "removes leading and trailing spaces from a string with $1"
-        When call trim "$2"
+        When call __trim "$2"
         The output should equal "string"
     End
 End
