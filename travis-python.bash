@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 # http://redsymbol.net/articles/unofficial-bash-strict-mode/
 # set -euo pipefail
 # IFS=$'\n\t'
