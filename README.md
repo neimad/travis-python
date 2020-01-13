@@ -2,6 +2,7 @@ travis-python
 =============
 Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 
+[![Latest release][release-badge]][ci]
 [![Build Status][ci-badge]][ci]
 [![License][license-badge]][license]
 
@@ -165,15 +166,16 @@ in the next release.
 License
 -------
 
-`travis-python` is licensed under the [GNU GPL 3 or later].
+`travis-python` is licensed under the [GNU GPL 3 or later][license].
 
+[license]: https://github.com/neimad/travis-python/blob/master/LICENSE.md
+[the changelog]: CHANGELOG.md
 [ci]: https://travis-ci.org/neimad/travis-python
 [ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
-[license]: https://github.com/neimad/travis-python/blob/master/LICENSE.md
+[release-badge]: https://img.shields.io/github/v/tag/neimad/travis-python?sort=semver&style=flat-square
+
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
-[the changelog]: CHANGELOG.md
-[GNU GPL 3 or later]: LICENSE.md
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
 [shellspec]: https://shellspec.info
