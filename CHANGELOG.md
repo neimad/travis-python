@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+### Fixed
+ - Recommended way of sourcing the `travis-python.bash` script.
 
 ## [0.1.1] - 2020-01-12
 ### Added

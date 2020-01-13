@@ -54,7 +54,8 @@ Finally, load the _travis-python_ script during the `pre-install` phase:
 
 ```yaml
 pre-install:
-  - source <(curl -sSL https://git.io/JeaZo)
+  - curl -o travis-python.bash -sSL https://git.io/JeaZo
+    && source travis-python.bash
   - install_python $LOCATION $VERSION
 ```
 
@@ -104,7 +105,8 @@ env:
   - PYTHON="2"
 
 pre-install:
-  - source <(curl -sSL https://git.io/JeaZo)
+  - curl -o travis-python.bash -sSL https://git.io/JeaZo
+    && source travis-python.bash
   - install_python $HOME/Python $PYTHON
 
 install: ...
