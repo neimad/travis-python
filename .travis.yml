@@ -27,9 +27,8 @@ script:
   - if [ $TRAVIS_OS_NAME = osx ]; then SHELLSPEC_FLAGS="--kcov"; fi
   - shellspec $SHELLSPEC_FLAGS spec/units
   - shellspec $SHELLSPEC_FLAGS spec/integration
-  - curl --remote-name -sSL
-    https://raw.githubusercontent.com/neimad/travis-python/$TRAVIS_COMMIT/travis-python.bash
-    && source travis-python.bash
+  - wget https://raw.githubusercontent.com/neimad/travis-python/$TRAVIS_COMMIT/travis-python.bash
+  - source travis-python.bash
   - install_python $HOME/Python $PYTHON
   - which python
   - python --version
