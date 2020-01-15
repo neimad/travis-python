@@ -1,0 +1,19 @@
+# Travis CI configuration snippet to use the latest development version of
+# travis-python.
+#
+# Just import it in your Travis CI configuration:
+#
+#  import: neimad/travis-python:dev.yml
+#
+
+language: shell
+
+os:
+  - linux
+  - osx
+  - windows
+
+before_install:
+  - wget https://raw.githubusercontent.com/neimad/travis-python/master/travis-python.bash
+  - source travis-python.bash
+  - install_python $HOME/python $PYTHON

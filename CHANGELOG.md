@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+ - Travis CI shared configuration snippet intented to be sourced in user
+   configuration (`dev.yml`).
 
 ## [0.1.2] - 2020-01-13
 ### Fixed

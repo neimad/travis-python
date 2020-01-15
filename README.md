@@ -12,7 +12,7 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 _travis-python_ is just a Bash script providing a helper function:
 
 ```bash
-install_python $LOCATION $SPECIFIER
+install_python <location> <specifier>
 ```
 
 The specified Python version, if found, will be installed at the specified
@@ -35,89 +35,31 @@ Usage
 To be able to use _travis-python_, the Travis machine needs to be configured
 to be able to run in the three operating systems.
 
-First, use a `shell` environment as it is the only minimal environment available
-in the three OS:
+The easiest way to do it is to [import][travis-config-imports] the shared
+configuration snippet:
 
 ```yaml
-language: shell
+import: neimad/travis-python:dev.yml
 ```
 
-Then, specify the required operating systems:
+Read [the configuration documentation] to understand how it works.
+
+Then, specify the wanted Python version using the `PYTHON` environment
+variable:
 
 ```yaml
-os:
-  - linux
-  - osx
-  - windows
-```
-
-Finally, load the _travis-python_ script during the `pre-install` phase:
-
-```yaml
-pre-install:
-  - curl -o travis-python.bash -sSL https://git.io/JeaZo
-    && source travis-python.bash
-  - install_python $LOCATION $VERSION
-```
-
-### Jobs for multiple Python versions
-
-You can run jobs for multiple Python versions by using an environment variable
-within the job matrix:
-
-```yaml
-env:
-  - PYTHON="3.7"
-  - PYTHON="3.6"
-
-pre-install:
-  - install_python $LOCATION $PYTHON
-```
-
-### Caching data
-
-To speed up your jobs, you can cache the Python environment:
-
-```yaml
-pre-install:
-  - install_python $HOME/Python $PYTHON
-
-cache:
-  directories:
-    - $HOME/Python
-```
-
-### Minimal recommended configuration
-
-```yaml
-language: shell
-
-os:
-  - linux
-  - osx
-  - windows
-
-osx_image: xcode11
+import: neimad/travis-python:dev.yml
 
 env:
-  - PYTHON="3.8"
-  - PYTHON="3.7"
-  - PYTHON="3.6"
-  - PYTHON="2"
-
-pre-install:
-  - curl -o travis-python.bash -sSL https://git.io/JeaZo
-    && source travis-python.bash
-  - install_python $HOME/Python $PYTHON
-
-install: ...
-
-script: ...
-
-cache:
-  directories:
-    - $HOME/Python
+  - PYTHON=3.8
+  - PYTHON=3.7
+  - PYTHON=2
 ```
+By default, it will generate a build matrix using the three operating systems
+available on Travis CI (Linux, macOS and Windows).
+
+The Python distribution is installed during the `pre-install` phase and
+available using the `python` program name (whether it is Python 2 or 3).
 
 Behind the scene
 ----------------
@@ -168,14 +110,17 @@ License
 
 `travis-python` is licensed under the [GNU GPL 3 or later][license].
 
-[license]: https://github.com/neimad/travis-python/blob/master/LICENSE.md
-[the changelog]: CHANGELOG.md
-[ci]: https://travis-ci.org/neimad/travis-python
 [ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
 [release-badge]: https://img.shields.io/github/v/tag/neimad/travis-python?sort=semver&style=flat-square
-
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
+
+[license]: LICENSE.md
+[the changelog]: CHANGELOG.md
+[the configuration documentation]: doc/Travis_Configuration.md
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
+[ci]: https://travis-ci.org/neimad/travis-python
+
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
+[travis-config-imports]: https://docs.travis-ci.com/user/build-config-imports/
 [shellspec]: https://shellspec.info
