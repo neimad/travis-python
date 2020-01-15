@@ -2,7 +2,7 @@
 
 Include ./travis-python.bash
 
-fDescribe "__latest_matching_version()"
+Describe "__latest_matching_version()"
     It "fails when the specifier is not specified"
         When run __latest_matching_version
         The status should be failure
