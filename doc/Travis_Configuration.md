@@ -36,14 +36,14 @@ the current shell. But as macOS machines use Bash 3.2, sourcing from `stdin` is
 not supported:
 
 ```yaml
-pre-install:
+before_install:
     - source <(curl -sSL $url) # not supported on Bash 3.2
 ```
 
 So, the script is downloaded using `wget` then sourced:
 
 ```yaml
-pre-install:
+before_install:
   - wget https://raw.githubusercontent.com/neimad/travis-python/master/travis-python.bash
   - source travis-python.bash
 ```
@@ -54,7 +54,7 @@ Finally, the Python distribution can be installed in the `$HOME/python`
 directory:
 
 ```yaml
-pre-install:
+before_install:
     - ...
     - install_python $HOME/python $PYTHON
 ```

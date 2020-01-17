@@ -39,8 +39,14 @@ The easiest way to do it is to [import][travis-config-imports] the shared
 configuration snippet:
 
 ```yaml
-import: neimad/travis-python:dev.yml
+import:
+  - source: neimad/travis-python:dev.yml
+    mode: deep_merge_prepend
 ```
+
+**The imported configuration needs to be prepended** and **a deep merge is
+required** to be able use the installed Python distribution in the
+`before_install` and subsequent phases.
 
 Read [the configuration documentation] to understand how it works.
 
@@ -48,7 +54,9 @@ Then, specify the wanted Python version using the `PYTHON` environment
 variable:
 
 ```yaml
-import: neimad/travis-python:dev.yml
+import:
+  - source: neimad/travis-python:dev.yml
+    mode: deep_merge_prepend
 
 env:
   - PYTHON=3.8
@@ -58,7 +66,7 @@ env:
 By default, it will generate a build matrix using the three operating systems
 available on Travis CI (Linux, macOS and Windows).
 
-The Python distribution is installed during the `pre-install` phase and
+The Python distribution is installed during the `before_install` phase and
 available using the `python` program name (whether it is Python 2 or 3).
 
 Behind the scene
