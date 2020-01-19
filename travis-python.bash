@@ -80,7 +80,7 @@ __windows_path() {
 
     if [[ $converted == \\* ]]; then
         # If it is an absolute path, convert the first component to a drive letter
-        drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}" )
+        drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}")
         converted="$drive_letter:${converted:2}"
     fi
 
@@ -96,7 +96,7 @@ __latest_matching_version() {
     # specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
     #
-    # Only stable versions are considered ()
+    # Only stable versions are considered.
     #
     local -r specifier=${1:?the specifier must be specified}
     local -r specifier_pattern=${specifier//./"\."}
@@ -116,12 +116,15 @@ __latest_matching_version() {
     shopt -s extglob
 
     for version in "${versions[@]}"; do
-        if [[ $version =~ ^${specifier_pattern}(\.[[:digit:]]+)*$ ]]; then
+        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && \
+            $version =~ ^${specifier_pattern} ]]; then
             found_version="$version"
         fi
     done
 
-    [[ -n $found_version ]] || return
+    if [[ -z $found_version ]]; then
+        return 1
+    fi
 
     echo "$found_version"
 }

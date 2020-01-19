@@ -44,13 +44,13 @@ Describe "__latest_matching_version()"
     End
 
     It "filters release candidates"
-        When call __latest_matching_version "3.7" "3.7.6" "3.7.6rc1" "3.7.6rc2"
+        When call __latest_matching_version "3.7" "3.7.6" "3.7.6rc2"
         The output should equal "3.7.6"
     End
 
-    It "filters sources versions"
-        When call __latest_matching_version "pypy-5.7" "pypy-5.7.1" "pypy-5.7.1-src"
-        The output should equal "pypy-5.7.1"
+    It "filters daily builds"
+        When call __latest_matching_version "3.7" "3.7.6" "3.7.6.20200125"
+        The output should equal "3.7.6"
     End
 
     Parameters

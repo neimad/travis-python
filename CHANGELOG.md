@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning].
  - Travis CI shared configuration snippet intented to be sourced in user
    configuration (`dev.yml`).
 
+### Fixed
+ - Filtering of daily build (available through Chocolatey) (#9).
+
 ## [0.1.2] - 2020-01-13
 ### Fixed
  - Recommended way of sourcing the `travis-python.bash` script (#2).
