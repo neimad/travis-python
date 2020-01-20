@@ -35,8 +35,7 @@ Usage
 To be able to use _travis-python_, the Travis machine needs to be configured
 to be able to run in the three operating systems.
 
-The easiest way to do it is to [import][travis-config-imports] the shared
-configuration snippet:
+The easiest way to do it is to [import the shared configuration snippet]:
 
 ```yaml
 import:
@@ -93,10 +92,24 @@ To solve those problems, some directions have been taken:
 Running tests
 -------------
 
-Use [shellspec] to run unit tests:
+Use [Shellspec] to run unit tests:
 
-```bash
+```console
 shellspec
+```
+
+Development
+-----------
+
+The following dependencies are required:
+  - [ShellCheck] to lint shell scripts,
+  - [Shellspec] to run units tests,
+  - [Bash] to run the script.
+
+Install the pre-commit hook within your repository:
+
+```console
+poetry run pre-commit install
 ```
 
 Contributing
@@ -130,5 +143,7 @@ License
 [ci]: https://travis-ci.org/neimad/travis-python
 
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
-[travis-config-imports]: https://docs.travis-ci.com/user/build-config-imports/
-[shellspec]: https://shellspec.info
+[import the shared configuration snippet]: https://docs.travis-ci.com/user/build-config-imports/
+[Shellspec]: https://shellspec.info/
+[ShellCheck]: https://www.shellcheck.net/
+[Bash]: https://www.gnu.org/software/bash/

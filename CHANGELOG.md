@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning].
 ### Added
  - Travis CI shared configuration snippet intented to be sourced in user
    configuration (`dev.yml`).
+ - pre-commit configuration file.
 
 ### Fixed
  - Filtering of daily build (available through Chocolatey) (#9).

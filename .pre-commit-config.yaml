@@ -1,0 +1,19 @@
+# See https://pre-commit.com for more information
+# See https://pre-commit.com/hooks.html for more hooks
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.4.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-byte-order-marker
+      - id: check-yaml
+  - repo: local
+    hooks:
+      - id: lint
+        name: Check scripts
+        language: system
+        types: [file, shell]
+        entry: shellcheck
+        pass_filenames: true
