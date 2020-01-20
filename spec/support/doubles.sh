@@ -28,6 +28,7 @@ stub() {
     local -r program=${1:?the program must be specified}
     shift
     local OPT
+    local OPTIND
     local -i has_output=0
     local output=
     local -i has_error=0
