@@ -2,10 +2,6 @@
 # Copyright © 2020 Damien Flament
 # This file is part of temptree.
 
-# http://redsymbol.net/articles/unofficial-bash-strict-mode/
-# set -euo pipefail
-# IFS=$'\n\t'
-
 TRAVIS_PYTHON_VERSION="0.1.2"
 TRAVIS_PYTHON_DIR="$HOME/travis-python"
 
@@ -49,7 +45,100 @@ __print_error() {
     fi
 
     echo -e "$message" >&2
-    return 1
+}
+
+__travis_python_error() {
+    # __travis_python_error [status]
+    #
+    # Handles error encountered while running the last command. Many data
+    # usefull for debugging are printed to stderr:
+    #  - the last command executed,
+    #  - its exit status code,
+    #  - the stack trace,
+    #  - informations about the executon environment.
+    #
+    # The status code of the command might be specified.
+    #
+    local -r status=${1:-$?}
+
+    __strict_mode
+
+    local -r failing_command=$BASH_COMMAND
+    local -i i
+    local -i args_i
+    local -i args_left
+    local arguments
+    local command_line
+
+    __print_error $'\nError\n-----'
+    __print_error "\`$failing_command\` exited with status $status."
+
+    # Print the stack trace
+    i=0
+
+    if ((i < ${#BASH_LINENO[@]})); then
+        __print_error $'\nStack trace\n-----------'
+
+        args_i=$# # skip arguments passed to this handler function
+
+        while ((i < ${#BASH_LINENO[@]})); do
+            if ((i == 0)); then
+                # The function name is the name of this handler function. Use
+                # the failing command instead.
+                command_line="$failing_command -> $status"
+            else
+                command_line=${FUNCNAME[i]}
+
+                if ((BASH_ARGC[i] > 0)); then
+                    arguments=
+
+                    for ((args_left = BASH_ARGC[i]; args_left > 0; args_left--)); do
+                        arguments="${BASH_ARGV[args_i]} $arguments"
+                        ((args_i += 1))
+                    done
+
+                    command_line="$command_line $arguments"
+                fi
+            fi
+
+            __print_error "[$i] $command_line"
+            __print_error "  in ${BASH_SOURCE[i]:-<unknown file>} at line ${BASH_LINENO[i]}"
+
+            ((i += 1))
+        done
+    fi
+
+    # Print information about the environment
+    __print_error $'\nEnvironment\n-----------'
+    __print_error "Bash $BASH_VERSION"
+    __print_error "  invoked as $BASH"
+    __print_error "  in process $$."
+    __print_error "Working in directory $PWD."
+    __print_error "Using PATH: \n  - ${PATH//:/$'\n  - '}"
+}
+
+__strict_mode() {
+    # __strict_mode
+    #
+    # Activates the unofficial Bash strict mode.
+    #
+    # Some Bash behaviors are modified:
+    #
+    # If a command fails, the shell exits and the `__travis_python_error`
+    # functions is executed with the exit status of the failing command as first
+    # argument.
+    #
+    # Any command failing in a pipeline causes the whole pipeline statement to
+    # be considered as failing.
+    #
+    # If an unset parameters is accessed, this is considered as an error.
+    #
+    # Finally, the `IFS` is set to prevent some misuse.
+    #
+    set -eEu -o pipefail
+    shopt -s extdebug
+    IFS=$'\n\t'
+    trap '__travis_python_error' ERR
 }
 
 __trim() {
@@ -57,6 +146,8 @@ __trim() {
     #
     # Trims leading and trailing whitespace characters from given string.
     #
+    __strict_mode
+
     local string=${1?the string must be specified}
 
     shopt -s extglob
@@ -71,6 +162,8 @@ __windows_path() {
     #
     # Converts a Unix path to Windows flavor.
     #
+    __strict_mode
+
     local -r path=${1:?the path must be specified}
     local converted
     local drive_letter
@@ -98,6 +191,8 @@ __latest_matching_version() {
     #
     # Only stable versions are considered.
     #
+    __strict_mode
+
     local -r specifier=${1:?the specifier must be specified}
     local -r specifier_pattern=${specifier//./"\."}
     shift
@@ -135,6 +230,8 @@ __latest_git_tag() {
     # Gives the latest tag from the Git repsitory located at the specified
     # directory.
     #
+    __strict_mode
+
     local -r directory=${1:?the directory must be specified}
 
     git -C "$directory" describe --abbrev=0 --tags
@@ -150,6 +247,8 @@ __update_git_repo() {
     # Otherwise, it is only fetched.
     # Then, the latest tag is checked out.
     #
+    __strict_mode
+
     local -r url=${1:?the URL must be specified}
     local -r directory=${2:?the directory must be specified}
     local latest_tag
@@ -169,6 +268,8 @@ __current_builder_version() {
     #
     # Gives the current version of python-build.
     #
+    __strict_mode
+
     local version
 
     version=$(python-build --version)
@@ -190,6 +291,8 @@ __install_builder() {
     # The `PATH` is updated to include the `bin` directory and the shell
     # commands hash table is reset.
     #
+    __strict_mode
+
     local directory=${1:?the installation directory must be specified}
     local -r repo_url="https://github.com/pyenv/pyenv"
     local -r clone_directory="/tmp/pyenv"
@@ -212,6 +315,8 @@ __available_python_versions_with_builder() {
     #
     # Gives the list of Python versions available via python-build.
     #
+    __strict_mode
+
     local versions
     local versions=()
     local IFS
@@ -232,6 +337,8 @@ __available_python_versions_with_chocolatey() {
     #
     # Gives the list of Python versions available via Chocolatey.
     #
+    __strict_mode
+
     local output
     local version
     local versions=()
@@ -255,6 +362,8 @@ __current_python_version() {
     #
     # Gives the current version of Python.
     #
+    __strict_mode
+
     local version
 
     version=$(python --version 2>&1)
@@ -275,6 +384,8 @@ install_python() {
     #
     # When OS is Linux or macOS, pyenv is used, on Windows, Chocolatey is used.
     #
+    __strict_mode
+
     local -r location=${1:?the installation directory must be specified}
     local -r specifier=${2:?the specifier must be specified}
     local -a available_versions
@@ -323,6 +434,8 @@ __travis_python_setup() {
     # Setups Python tools for Travis CI for installation within specified
     # directory.
     #
+    __strict_mode
+
     : "${TRAVIS_OS_NAME:?must be set and not null}"
 
     __print_info "travis-python $TRAVIS_PYTHON_VERSION"

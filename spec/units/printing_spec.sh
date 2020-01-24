@@ -55,7 +55,6 @@ Describe "__print_error()"
 
     It "prints a message to standard error"
         When call __print_error "message"
-        The status should be failure
         The error should equal "message"
     End
 End

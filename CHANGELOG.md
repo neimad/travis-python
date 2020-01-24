@@ -10,14 +10,16 @@ and this project adheres to [Semantic Versioning].
  - Travis CI shared configuration snippet intented to be sourced in user
    configuration (`dev.yml`).
  - pre-commit configuration file.
+ - Bash strict mode with error handler.
 
 ### Fixed
- - Filtering of daily build (available through Chocolatey) (#9).
+ - Filtering of daily build (available through Chocolatey) [#9].
+ - Errors are correctly handled [#10].
 
 ## [0.1.2] - 2020-01-13
 ### Fixed
- - Recommended way of sourcing the `travis-python.bash` script (#2).
- - Unstable versions filtering (#3).
+ - Recommended way of sourcing the `travis-python.bash` script [#2].
+ - Unstable versions filtering [#3].
 
 ## [0.1.1] - 2020-01-12
 ### Added
