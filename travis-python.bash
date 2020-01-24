@@ -225,7 +225,7 @@ __latest_matching_version() {
 __latest_git_tag() {
     # __latest_git_tag <directory>
     #
-    # Gives the latest tag from the Git repsitory located at the specified
+    # Gives the latest tag from the Git repository located at the specified
     # directory.
     #
     __strict_mode
