@@ -455,7 +455,7 @@ __travis_python_setup() {
 
     __print_info "travis-python $TRAVIS_PYTHON_VERSION"
 
-    case ${TRAVIS_OS_NAME} in
+    case $TRAVIS_OS_NAME in
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
             choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade

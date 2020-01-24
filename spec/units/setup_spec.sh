@@ -12,7 +12,7 @@ Describe "setup()"
     End
 
     It "needs the TRAVIS_OS_NAME environment variable to be not null"
-        export TRAVIS_OS_NAME=
+        TRAVIS_OS_NAME=
 
         When run __travis_python_setup
         The status should be failure

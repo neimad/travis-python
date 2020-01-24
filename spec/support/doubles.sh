@@ -41,24 +41,24 @@ stub() {
         case "$OPT" in
             o)
                 has_output=1
-                output="$OPTARG"
+                output=$OPTARG
                 ;;
             e)
                 has_error=1
-                error="$OPTARG"
+                error=$OPTARG
                 ;;
-            s) status="$OPTARG" ;;
+            s) status=$OPTARG ;;
             *) return 1 ;;
         esac
     done
 
     code="$program() {"
 
-    if (( has_output )); then
+    if ((has_output)); then
         code="$code echo '$output';"
     fi
 
-    if (( has_error )); then
+    if ((has_error)); then
         code="$code echo '$error' >&2;"
     fi
 
@@ -101,7 +101,7 @@ spy_check() {
     #
     local -r command_line=${1:?the command line must be specified}
 
-    if [[ ! -f "$SPY_CALLS_FILE" ]]; then
+    if [[ ! -f $SPY_CALLS_FILE ]]; then
         return 1
     fi
 
@@ -113,7 +113,11 @@ spy_dump() {
     #
     # Dumps the calls made to the spied commands.
     #
-    local -r content=$([[ -f $SPY_CALLS_FILE ]] && cat "$SPY_CALLS_FILE")
+    local content=
+
+    if [[ -f $SPY_CALLS_FILE ]]; then
+        content=$(cat "$SPY_CALLS_FILE")
+    fi
 
     shellspec_putsn "
 Spy Report
