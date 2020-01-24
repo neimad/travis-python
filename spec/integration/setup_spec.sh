@@ -3,12 +3,11 @@
 Include ./travis-python.bash
 
 Context "When on Travis CI"
-    TRAVIS=${TRAVIS:-}
-    Skip if "not on Travis CI" test "$TRAVIS" != 'true'
+    Skip if "not on Travis CI" test "${TRAVIS:-}" != 'true'
 
     Describe "setup()"
         Context "when on a Linux platform"
-            Skip if "not on Linux platform" test "$TRAVIS_OS_NAME" != 'linux'
+            Skip if "not on Linux platform" test "${TRAVIS_OS_NAME:-}" != 'linux'
 
             It "installs python-build"
                 When call __travis_python_setup
@@ -23,7 +22,7 @@ Context "When on Travis CI"
         End
 
         Context "when on a macOS platform"
-            Skip if "not on macOS platform" test "$TRAVIS_OS_NAME" != 'osx'
+            Skip if "not on macOS platform" test "${TRAVIS_OS_NAME:-}" != 'osx'
 
             It "installs python-build"
                 When call __travis_python_setup
@@ -38,7 +37,7 @@ Context "When on Travis CI"
         End
 
         Context "when on a Windows platform"
-            Skip if "not on Windows platform" test "$TRAVIS_OS_NAME" != 'windows'
+            Skip if "not on Windows platform" test "${TRAVIS_OS_NAME:-}" != 'windows'
 
             Todo "downgrades Chocolatey"
         End
