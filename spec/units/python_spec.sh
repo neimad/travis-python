@@ -2,6 +2,44 @@
 
 Include ./travis-python.bash
 
+Describe "__available_python_versions()"
+    Context "when on a Linux platform"
+        Before "TRAVIS_OS_NAME=linux"
+
+        It "gets the list of available versions from python-build"
+            spy '__available_python_versions_from_builder'
+            spy '__available_python_versions_from_chocolatey'
+
+            When call __available_python_versions
+            The command "__available_python_versions_from_builder" should be called
+        End
+    End
+
+    Context "when on a macOS platform"
+        Before "TRAVIS_OS_NAME=osx"
+
+        It "gets the list of available versions from python-build"
+            spy '__available_python_versions_from_builder'
+            spy '__available_python_versions_from_chocolatey'
+
+            When call __available_python_versions
+            The command "__available_python_versions_from_builder" should be called
+        End
+    End
+
+    Context "when on a Windows platform"
+        Before "TRAVIS_OS_NAME=windows"
+
+        It "gets the list of available versions from Chocolatey"
+            spy '__available_python_versions_from_chocolatey'
+            spy '__available_python_versions_from_builder'
+
+            When call __available_python_versions
+            The command "__available_python_versions_from_chocolatey" should be called
+        End
+    End
+End
+
 Describe "__current_python_version()"
     It "gets the version from Python output"
         spy 'python'
@@ -51,6 +89,23 @@ Describe "install_python()"
         The error should end with "the specifier must be specified"
     End
 
+    It "fails when no Python version are available"
+        stub '__available_python_versions' -o ""
+
+        When run install_python "foo" "3.7"
+        The status should be failure
+        The error should equal "No Python version available."
+    End
+
+    It "fails when no Python version are matching the specifier"
+        stub '__available_python_versions' -o "3.6.7" "3.6.8" "3.6.9"
+        stub '__latest_matching_version' -o ""
+
+        When run install_python "foo" "3.7"
+        The status should be failure
+        The error should equal "No Python version found matching 3.7."
+    End
+
     Before 'setup_directory'
     After 'cleanup_directory'
     directory=${directory:-}
@@ -59,8 +114,9 @@ Describe "install_python()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "installs Python using python-build"
-            stub '__available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
-            stub '__current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions' -o "2.6.4 3.7.1 3.7.2"
+            stub '__latest_matching_version' -o "3.7.2"
+            stub '__current_python_version' -o "3.7.2"
             spy 'python-build'
             spy 'pyenv'
 
@@ -78,8 +134,9 @@ Describe "install_python()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "installs Python using python-build"
-            stub '__available_python_versions_with_builder' -o "2.6.4 3.7.1 3.7.2"
-            stub '__current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions' -o "2.6.4 3.7.1 3.7.2"
+            stub '__latest_matching_version' -o "3.7.2"
+            stub '__current_python_version' -o "3.7.2"
             spy 'python-build'
             spy 'pyenv'
 
@@ -98,8 +155,9 @@ Describe "install_python()"
 
         It "installs Python using Chocolatey"
             spy 'choco'
-            stub '__available_python_versions_with_chocolatey' -o "2.6.4 3.7.1 3.7.2"
-            stub '__current_python_version' -s 0 -o "3.7.2"
+            stub '__available_python_versions' -o "2.6.4 3.7.1 3.7.2"
+            stub '__latest_matching_version' -o "3.7.2"
+            stub '__current_python_version' -o "3.7.2"
 
             When call install_python "$directory" "3.7"
             The line 1 of output should equal "Installing Python 3.7.2..."

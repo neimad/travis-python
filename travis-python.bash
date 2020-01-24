@@ -308,10 +308,10 @@ __install_builder() {
     __print_success "Installed python-build $(__current_builder_version)."
 }
 
-__available_python_versions_with_builder() {
-    # __available_python_versions_with_builder
+__available_python_versions_from_builder() {
+    # __available_python_versions_from_builder
     #
-    # Gives the list of Python versions available via python-build.
+    # Gives the list of Python versions available from python-build.
     #
     __strict_mode
 
@@ -327,23 +327,25 @@ __available_python_versions_with_builder() {
         fi
     done < <(python-build --definitions)
 
-    echo "${versions[@]}"
+    IFS=$'\n'
+    echo "${versions[*]}"
 }
 
-__available_python_versions_with_chocolatey() {
-    # __available_python_versions_with_chocolatey
+__available_python_versions_from_chocolatey() {
+    # __available_python_versions_from_chocolatey
     #
-    # Gives the list of Python versions available via Chocolatey.
+    # Gives the list of Python versions available from Chocolatey.
     #
     __strict_mode
 
     local output
     local version
     local versions=()
+    local IFS
 
     output=$(choco list python --exact --all-versions --limit-output)
 
-    while read -r version; do
+    while IFS='' read -r version; do
         version=$(__trim "$version")
         version="${version#'python|'}"
 
@@ -352,7 +354,22 @@ __available_python_versions_with_chocolatey() {
         fi
     done <<<"$output"
 
-    echo "${versions[@]}"
+    IFS=$'\n'
+    echo "${versions[*]}"
+}
+
+__available_python_versions() {
+    # __available_python_versions
+    #
+    # Gives the list of Python versions available on the current platform.
+    #
+    __strict_mode
+
+    if [[ $TRAVIS_OS_NAME == "windows" ]]; then
+        __available_python_versions_from_chocolatey
+    else
+        __available_python_versions_from_builder
+    fi
 }
 
 __current_python_version() {
@@ -390,12 +407,12 @@ install_python() {
     local version
     export PATH
 
-    if [[ $TRAVIS_OS_NAME == "windows" ]]; then
-        # shellcheck disable=SC2207
-        available_versions=($(__available_python_versions_with_chocolatey))
-    else
-        # shellcheck disable=SC2207
-        available_versions=($(__available_python_versions_with_builder))
+    # shellcheck disable=SC2207
+    available_versions=($(__available_python_versions))
+
+    if ((${#available_versions[@]} == 0)); then
+        __print_error "No Python version available."
+        return $__EXIT_FAILURE
     fi
 
     version=$(__latest_matching_version "$specifier" "${available_versions[@]}")

@@ -33,29 +33,43 @@ Describe "__install_builder()"
     End
 End
 
-Describe "__available_python_versions_with_builder()"
+Describe "__available_python_versions_from_builder()"
     It "gets the list of available versions from python-build"
         spy 'python-build'
 
-        When call __available_python_versions_with_builder
+        When call __available_python_versions_from_builder
         The command "python-build --definitions" should be called
         The output should be blank
     End
 
     It "filters the ouput of the python-build command"
-        python-build() {
-            echo $'   2.3.1\t\n'
-            echo $'\t\t3.7.6                     '
-            echo $'3.7.7    \t     \t   '
-            echo '3.8.0'
-            echo $'\n3.8.0-dev '
-            echo $'3.8.1  '
-            echo $'\tactivepython-3.7.0\n'
-            echo $'anaconda-4.0.0    '
-        }
+        stub 'python-build' -o $'
+            2.3.1\t
+            \t\t3.7.6
+            3.7.7    \t     \t
+            3.8.0
+            3.8.0-dev
+            3.8.1
+            \tactivepython-3.7.0
+            anaconda-4.0.0
+            '
 
-        When call __available_python_versions_with_builder
-        The output should equal "2.3.1 3.7.6 3.7.7 3.8.0 3.8.0-dev 3.8.1 activepython-3.7.0 anaconda-4.0.0"
+        When call __available_python_versions_from_builder
+        The line 1 of output should equal "2.3.1"
+        The line 2 of output should equal "3.7.6"
+        The line 3 of output should equal "3.7.7"
+        The line 4 of output should equal "3.8.0"
+        The line 5 of output should equal "3.8.0-dev"
+        The line 6 of output should equal "3.8.1"
+        The line 7 of output should equal "activepython-3.7.0"
+        The line 8 of output should equal "anaconda-4.0.0"
+    End
+
+    It "gives an empty output if no version are available"
+        stub 'python-build' -o ""
+
+        When call __available_python_versions_from_builder
+        The output should be blank
     End
 End
 
