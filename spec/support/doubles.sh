@@ -5,6 +5,7 @@
 # The location of the spy reports.
 #
 export SPY_DIR="$SHELLSPEC_TMPBASE/spy"
+export SPY_CALLS_FILE=
 mkdir -p "$SPY_DIR"
 
 dummy() {
