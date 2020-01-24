@@ -14,7 +14,7 @@ __print_info() {
     #
     local message=${1:?the message must be specified}
 
-    if [[ -t 1 && $(tput colors) ]]; then
+    if [[ -t 1 ]]; then
         message="\033[0;33m$message\033[0m"
     fi
 
@@ -28,7 +28,7 @@ __print_success() {
     #
     local message=${1:?the message must be specified}
 
-    if [[ -t 1 && $(tput colors) ]]; then
+    if [[ -t 1 ]]; then
         message="\033[0;32m$message\033[0m"
     fi
 
@@ -42,7 +42,7 @@ __print_error() {
     #
     local message=${1:?the message must be specified}
 
-    if [[ -t 1 && $(tput colors) ]]; then
+    if [[ -t 1 ]]; then
         message="\033[0;31m$message\033[0m"
     fi
 
