@@ -23,7 +23,8 @@ stub() {
     #
     # Creates a stub for the specified program.
     # If output is specified, the stub outputs it to stdout.
-    # If error is specified, the stub outputs it to stderr.
+    # If error is specified, the stub outputs it to stderr, after the output if
+    # any.
     # If status is specified, the stub returns it, 0 otherwize.
     #
     local -r program=${1:?the program must be specified}
