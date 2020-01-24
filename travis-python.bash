@@ -5,6 +5,8 @@
 TRAVIS_PYTHON_VERSION="0.1.2"
 TRAVIS_PYTHON_DIR="$HOME/travis-python"
 
+readonly __EXIT_FAILURE=1
+
 __print_info() {
     # __print_info <message>
     #
@@ -202,7 +204,7 @@ __latest_matching_version() {
 
     if ((${#versions} == 0)); then
         echo "the versions must not be empty" >&2
-        return 1
+        return $__EXIT_FAILURE
     fi
 
     #shellcheck disable=SC2207
@@ -399,8 +401,8 @@ install_python() {
     version=$(__latest_matching_version "$specifier" "${available_versions[@]}")
 
     if [[ -z $version ]]; then
-        __print_error "No Python version found matching $specifier"
-        return 1
+        __print_error "No Python version found matching $specifier."
+        return $__EXIT_FAILURE
     fi
 
     __print_info "Installing Python $version..."
@@ -447,7 +449,7 @@ __travis_python_setup() {
             ;;
         *)
             __print_error "The '$TRAVIS_OS_NAME' platform is not supported."
-            return 1
+            return $__EXIT_FAILURE
             ;;
     esac
 
