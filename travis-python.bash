@@ -217,10 +217,6 @@ __latest_matching_version() {
         fi
     done
 
-    if [[ -z $found_version ]]; then
-        return 1
-    fi
-
     echo "$found_version"
 }
 

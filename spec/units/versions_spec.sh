@@ -27,9 +27,8 @@ Describe "__latest_matching_version()"
         The error should end with "the versions must not be empty"
     End
 
-    It "fails when not any version match"
+    It "outputs nothing when not any version match"
         When call __latest_matching_version "1.0" "1.1.0" "2.6.3" "3.4.2"
-        The status should be failure
         The output should be blank
     End
 
