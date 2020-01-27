@@ -1,0 +1,39 @@
+travis-python specification
+===========================
+
+You're running the application against the specification using Shellspec.
+
+But you can also:
+
+ - see the specification:
+
+    $ shellspec -f d
+
+ - check the code covered by the specification using Kcov:
+
+    $ shellspec --kcov
+
+ - run the tests using another shell:
+
+    $ shellspec --shell /usr/bin/bash3
+
+ - run only the unit tests:
+
+    $ shellspec spec/units
+
+ - run only integration tests:
+
+    $ shellspec spec/integration
+
+ - simulate a Travis CI environment:
+
+    $ shellspec --require travis
+
+Obviously, those options can be mixed together. For example, to run only
+integrations tests on your development machine using Bash 3 and checking
+coverage:
+
+    $ shellspec --require travis --shell /usr/bin/bash3 --kcov spec/integration
+
+Note: This message can be hidden with --no-banner option.
+--------------------------------------------------------------------------------

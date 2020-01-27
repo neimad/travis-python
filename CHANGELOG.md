@@ -9,8 +9,9 @@ and this project adheres to [Semantic Versioning].
 ### Added
  - Travis CI shared configuration snippet intented to be sourced in user
    configuration (`dev.yml`).
- - pre-commit configuration file.
  - Bash strict mode with error handler.
+ - pre-commit configuration file.
+ - Shellspec banner to give directions for running the tests.
 
 ### Fixed
  - Filtering of daily build (available through Chocolatey) [#9].
