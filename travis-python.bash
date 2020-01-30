@@ -434,7 +434,7 @@ install_python() {
 
         PATH="$location:$location/Scripts:$PATH"
     else
-        python-build "$version" "$location" &>/dev/null
+        CFLAGS='' python-build "$version" "$location" &>/dev/null
         PATH="$location/bin:$PATH"
     fi
 
