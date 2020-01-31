@@ -69,7 +69,7 @@ Describe "__update_git_repo()"
     End
 
     It "loads the latest tag"
-        stub '__latest_git_tag' -o '1.2.3' -s 25
+        stub '__latest_git_tag' -o '1.2.3'
         spy 'git'
 
         When call __update_git_repo 'https://foo' "$directory"
