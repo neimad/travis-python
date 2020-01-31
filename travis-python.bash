@@ -382,12 +382,14 @@ __available_python_versions_from_builder() {
         version=$(__trim "$version")
 
         if [[ -n $version ]]; then
-            versions=("${versions[@]}" "$version")
+            versions+=("$version")
         fi
     done < <(python-build --definitions)
 
-    IFS=$'\n'
-    echo "${versions[*]}"
+    if ((${#versions[@]} > 0)); then
+        IFS=$'\n'
+        echo "${versions[*]}"
+    fi
 }
 
 __available_python_versions_from_chocolatey() {
@@ -409,12 +411,14 @@ __available_python_versions_from_chocolatey() {
         version="${version#'python|'}"
 
         if [[ -n $version ]]; then
-            versions=("${versions[@]}" "$version")
+            versions+=("$version")
         fi
     done <<<"$output"
 
-    IFS=$'\n'
-    echo "${versions[*]}"
+    if ((${#versions[@]} > 0)); then
+        IFS=$'\n'
+        echo "${versions[*]}"
+    fi
 }
 
 __available_python_versions() {
