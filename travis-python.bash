@@ -3,7 +3,10 @@
 # This file is part of temptree.
 
 TRAVIS_PYTHON_VERSION="0.1.2"
-TRAVIS_PYTHON_DIR="$HOME/travis-python"
+TRAVIS_PYTHON_DIR=$HOME/travis-python
+
+readonly __TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$TRAVIS_PYTHON_DIR/silent_output
+readonly __TRAVIS_PYTHON_SILENT_ERROR_FILE=$TRAVIS_PYTHON_DIR/silent_error
 
 readonly __EXIT_FAILURE=1
 
@@ -56,8 +59,11 @@ __travis_python_error() {
     # usefull for debugging are printed to stderr:
     #  - the last command executed,
     #  - its exit status code,
+    #  - its output (if it has been silenced usin `__run_silent`),
     #  - the stack trace,
-    #  - informations about the executon environment.
+    #  - informations about the execution environment.
+    #
+    # If the command has been silenced, its output is printed.
     #
     # The status code of the command might be specified.
     #
@@ -66,14 +72,35 @@ __travis_python_error() {
     __strict_mode
 
     local -r failing_command=$BASH_COMMAND
+    local output
+    local error
     local -i i
     local -i args_i
     local -i args_left
     local arguments
     local command_line
 
-    __print_error $'\nError\n-----'
+    __print_error $'\nCommand failed\n--------------'
     __print_error "\`$failing_command\` exited with status $status."
+
+    # Print output of silenced command.
+    if [[ -s $__TRAVIS_PYTHON_SILENT_OUTPUT_FILE ]]; then
+        output=$(<"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE")
+
+        if [[ -n $output ]]; then
+            __print_error $'\nCommand Standard Output\n-----------------------'
+            __print_error "$output"
+        fi
+    fi
+
+    if [[ -s $__TRAVIS_PYTHON_SILENT_ERROR_FILE ]]; then
+        error=$(<"$__TRAVIS_PYTHON_SILENT_ERROR_FILE")
+
+        if [[ -n $error ]]; then
+            __print_error $'\nCommand Standard Error\n----------------------'
+            __print_error "$error"
+        fi
+    fi
 
     # Print the stack trace
     i=0
@@ -141,6 +168,38 @@ __strict_mode() {
     shopt -s extdebug
     IFS=$'\n\t'
     trap '__travis_python_error' ERR
+}
+
+__run_silent() {
+    # __run_silent <command>
+    #
+    # Runs a command silently, printing its output in case of error.
+    #
+    # The specified command is run while capturing its output (on both stdout
+    # and stderr). If the command exists with a status code other than 0, its
+    # output will be available to the `__travis_python_error` handler.
+    #
+    __strict_mode
+
+    : "${1:?the command must be specified}"
+    local -i status
+
+    # The files are (re)initialized. This is important in order to clear output
+    # from a previously silenced command.
+    : >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" >"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+
+    # Then the stdout and stderr streams are redirected to them.
+    set +e
+    "$@" >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" 2>"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+    status=$?
+    set -e
+
+    # If the command succeed, the files are cleared.
+    if ((status == 0)); then
+        : >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" >"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+    fi
+
+    return $status
 }
 
 __trim() {
@@ -252,13 +311,13 @@ __update_git_repo() {
     local latest_tag
 
     if [[ ! -d $directory ]]; then
-        git clone "$url" "$directory" --quiet
+        __run_silent git clone "$url" "$directory"
     else
-        git -C "$directory" fetch
+        __run_silent git -C "$directory" fetch
     fi
 
     latest_tag=$(__latest_git_tag "$directory")
-    git -C "$directory" checkout "$latest_tag" --detach --quiet
+    __run_silent git -C "$directory" checkout "$latest_tag" --detach
 }
 
 __current_builder_version() {
@@ -425,7 +484,7 @@ install_python() {
     __print_info "Installing Python $version..."
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
-        choco install python \
+        __run_silent choco install python \
             --version="$version" \
             --yes \
             --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(__windows_path "$location")\"" \
@@ -434,7 +493,7 @@ install_python() {
 
         PATH="$location:$location/Scripts:$PATH"
     else
-        CFLAGS='' python-build "$version" "$location" &>/dev/null
+        CFLAGS='' __run_silent python-build "$version" "$location"
         PATH="$location/bin:$PATH"
     fi
 
@@ -458,7 +517,7 @@ __travis_python_setup() {
     case $TRAVIS_OS_NAME in
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
-            choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
+            __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
             __print_success "Installed Chocolatey $(choco --version)."
             ;;
         linux | osx)
