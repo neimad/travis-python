@@ -25,8 +25,8 @@ before_script:
 
 script:
   - if [ $TRAVIS_OS_NAME = osx ]; then SHELLSPEC_FLAGS="--kcov"; fi
-  - shellspec $SHELLSPEC_FLAGS spec/units
-  - shellspec $SHELLSPEC_FLAGS spec/integration
+  - shellspec --no-banner $SHELLSPEC_FLAGS spec/units
+  - shellspec --no-banner $SHELLSPEC_FLAGS spec/integration
   - wget https://raw.githubusercontent.com/neimad/travis-python/$TRAVIS_COMMIT/travis-python.bash
   - source travis-python.bash
   - install_python $HOME/Python $PYTHON
