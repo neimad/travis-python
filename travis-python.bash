@@ -170,6 +170,36 @@ __strict_mode() {
     trap '__travis_python_error' ERR
 }
 
+__trim() {
+    # __trim <string>
+    #
+    # Trims leading and trailing whitespace characters from given string.
+    #
+    __strict_mode
+
+    local string=${1?the string must be specified}
+
+    shopt -s extglob
+    string=${string##+([[:space:]])}
+    string=${string%%+([[:space:]])}
+
+    echo "$string"
+}
+
+__init_file() {
+    # __init_file <path>
+    #
+    # Creates a file located at the specified path.
+    #
+    # All parent directories are created if needed. If the file already exists,
+    # it is overwritten.
+    #
+    local -r path=${1:?the path must be specified}
+
+    mkdir -p "$(dirname "$path")"
+    : >|"$path"
+}
+
 __run_silent() {
     # __run_silent <command>
     #
@@ -186,7 +216,8 @@ __run_silent() {
 
     # The files are (re)initialized. This is important in order to clear output
     # from a previously silenced command.
-    : >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" >"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+    __init_file "$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
+    __init_file "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
 
     # Then the stdout and stderr streams are redirected to them.
     set +e
@@ -194,28 +225,13 @@ __run_silent() {
     status=$?
     set -e
 
-    # If the command succeed, the files are cleared.
+    # If the command succeed, the files are removed.
     if ((status == 0)); then
-        : >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" >"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+        rm -f "$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
+        rm -f "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
     fi
 
     return $status
-}
-
-__trim() {
-    # __trim <string>
-    #
-    # Trims leading and trailing whitespace characters from given string.
-    #
-    __strict_mode
-
-    local string=${1?the string must be specified}
-
-    shopt -s extglob
-    string=${string##+([[:space:]])}
-    string=${string%%+([[:space:]])}
-
-    echo "$string"
 }
 
 __windows_path() {
