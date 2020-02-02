@@ -26,7 +26,7 @@ The `specifier` is similar to [the `python` key available in the Travis CI confi
  - if the patch version is ignored (e.g. `3.7`) the latest matching stable
    version available is installed, if any,
  - if only the major version is specified (e.g. `3`) the latest matching
-   stable version available is installed, if any,
+   stable version available is installed, if any.
 
 > :warning: Version constraints (e.g. `~`, `^` or `*`) are NOT supported.
 
@@ -45,7 +45,7 @@ import:
 ```
 
 **The imported configuration needs to be prepended** and **a deep merge is
-required** to be able use the installed Python distribution in the
+required** to be able to use the installed Python distribution in the
 `before_install` and subsequent phases.
 
 Read [the configuration documentation] to understand how it works.
