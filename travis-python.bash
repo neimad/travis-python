@@ -160,11 +160,22 @@ __strict_mode() {
     # Any command failing in a pipeline causes the whole pipeline statement to
     # be considered as failing.
     #
-    # If an unset parameters is accessed, this is considered as an error.
+    # If an unset parameter is expanded, this is considered as an error.
     #
     # Finally, the `IFS` is set to prevent some misuse.
     #
-    set -eEu -o pipefail
+    # Because this script is sourced and Travis CI functions does not like the
+    # strict mode, behaviors are disabled when on a Travis CI machine:
+    #  - expanding unset parameters is not treated as an error.
+    #
+    set -o errexit
+    set -o errtrace
+    set -o pipefail
+
+    if [[ $TRAVIS != 'true' ]]; then
+        set -o nounset
+    fi
+
     shopt -s extdebug
     IFS=$'\n\t'
     trap '__travis_python_error' ERR
