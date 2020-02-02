@@ -21,13 +21,13 @@ Context "When on Travis CI"
             It "installs python-build"
                 When call __travis_python_setup
                 The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
-                The line 2 of output should equal "Installing latest python-build to $HOME/travis-python/builder..."
+                The line 2 of output should equal "Installing latest python-build to $TRAVIS_PYTHON_DIR/builder..."
                 The line 3 of output should start with "Installed python-build"
                 The line 4 of output should equal "Python tools for Travis CI loaded."
                 The line 5 of output should be blank
                 The result of function "python-build_--version" should match 'python-build\ ????????'
-                The variable PATH should start with "$HOME/travis-python/builder/bin:"
-                The result of function "command_-v_python-build" should equal "$HOME/travis-python/builder/bin/python-build"
+                The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
+                The result of function "command_-v_python-build" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
             End
         End
 
@@ -37,12 +37,12 @@ Context "When on Travis CI"
             It "installs python-build"
                 When call __travis_python_setup
                 The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
-                The line 2 of output should equal "Installing latest python-build to $HOME/travis-python/builder..."
+                The line 2 of output should equal "Installing latest python-build to $TRAVIS_PYTHON_DIR/builder..."
                 The line 3 of output should start with "Installed python-build"
                 The line 4 of output should equal "Python tools for Travis CI loaded."
-                The result of function "python-build --version" should match 'python-build?????????'
-                The variable PATH should start with "$HOME/travis-python/builder/bin:"
-                The result of function "which python-build" should equal "$HOME/travis-python/builder/bin/python-build"
+                The result of function "python-build_--version" should match 'python-build\ ????????'
+                The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
+                The result of function "command_-v_python-build" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
             End
         End
 
