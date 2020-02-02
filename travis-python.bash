@@ -172,7 +172,7 @@ __strict_mode() {
     set -o errtrace
     set -o pipefail
 
-    if [[ $TRAVIS != 'true' ]]; then
+    if [[ ${TRAVIS:-} != 'true' ]]; then
         set -o nounset
     fi
 
