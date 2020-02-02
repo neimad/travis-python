@@ -2,7 +2,7 @@
 # Copyright © 2020 Damien Flament
 # This file is part of temptree.
 
-TRAVIS_PYTHON_VERSION="0.1.2"
+TRAVIS_PYTHON_VERSION="0.1.3"
 TRAVIS_PYTHON_DIR=$HOME/travis-python
 
 readonly __TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$TRAVIS_PYTHON_DIR/silent_output
