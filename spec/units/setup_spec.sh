@@ -2,7 +2,7 @@
 
 Include ./travis-python.bash
 
-Describe "setup()"
+Describe "__travis_python_setup()"
     It "needs the TRAVIS_OS_NAME environment variable to be set"
         unset TRAVIS_OS_NAME
 
