@@ -140,7 +140,7 @@ License
 [the configuration documentation]: doc/Travis_Configuration.md
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
-[ci]: https://travis-ci.org/neimad/travis-python
+[ci]: https://travis-ci.com/neimad/travis-python
 
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
 [import the shared configuration snippet]: https://docs.travis-ci.com/user/build-config-imports/
