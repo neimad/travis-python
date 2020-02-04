@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright © 2020 Damien Flament
-# This file is part of temptree.
+# This file is part of travis-python.
 
 TRAVIS_PYTHON_VERSION="0.1.3"
 TRAVIS_PYTHON_DIR=$HOME/travis-python
