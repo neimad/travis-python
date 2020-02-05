@@ -3,6 +3,7 @@ travis-python
 Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 
 ![Supported Python versions][python-versions-badge]
+![Supported Operating Systems][os-badge]
 [![Build Status][ci-badge]][ci]
 [![License][license-badge]][license]
 
@@ -132,6 +133,7 @@ License
 `travis-python` is licensed under the [GNU GPL 3 or later][license].
 
 [python-versions-badge]: https://img.shields.io/badge/python-2.7%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
+[os-badge]: https://img.shields.io/badge/OS-Linux%20|%20macOS%20|%20Windows-blueviolet?style=flat-square
 [ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
 
