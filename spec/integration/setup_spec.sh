@@ -5,13 +5,13 @@ Include ./travis-python.bash
 Context "When on Travis CI"
     Skip if "not on Travis CI" test "${TRAVIS:-}" != 'true'
 
-    Describe "setup()"
+    Describe "__travis_python_setup()"
         # Workaround for bug https://github.com/shellspec/shellspec/issues/30
-        python-build_--version() {
+        python_build_version() {
             python-build --version
         }
 
-        command_-v_python-build() {
+        python_build_location() {
             command -v python-build
         }
 
@@ -25,9 +25,9 @@ Context "When on Travis CI"
                 The line 3 of output should start with "Installed python-build"
                 The line 4 of output should equal "Python tools for Travis CI loaded."
                 The line 5 of output should be blank
-                The result of function "python-build_--version" should match 'python-build\ ????????'
+                The result of function "python_build_version" should match pattern 'python-build ????????'
                 The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
-                The result of function "command_-v_python-build" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
+                The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
             End
         End
 
@@ -40,9 +40,9 @@ Context "When on Travis CI"
                 The line 2 of output should equal "Installing latest python-build to $TRAVIS_PYTHON_DIR/builder..."
                 The line 3 of output should start with "Installed python-build"
                 The line 4 of output should equal "Python tools for Travis CI loaded."
-                The result of function "python-build_--version" should match 'python-build\ ????????'
+                The result of function "python_build_version" should match pattern 'python-build ????????'
                 The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
-                The result of function "command_-v_python-build" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
+                The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
             End
         End
 

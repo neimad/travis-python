@@ -13,11 +13,11 @@ Context "When on Travis CI"
         Skip if "Python version is not specified" test -z "${PYTHON:-}"
 
         # Workaround for bug https://github.com/shellspec/shellspec/issues/30
-        python_--version() {
+        python_version() {
             python --version
         }
 
-        command_-v_python() {
+        python_location() {
             command -v python
         }
 
@@ -28,8 +28,8 @@ Context "When on Travis CI"
             The line 1 of output should start with "Installing Python $PYTHON"
             The line 2 of output should start with "Installed Python $PYTHON"
             The line 3 of output should be blank
-            The result of function "python_--version" should start with "Python $PYTHON"
-            The result of function "command_-v_python" should equal "$directory/Python/bin/python"
+            The result of function "python_version" should start with "Python $PYTHON"
+            The result of function "python_location" should equal "$directory/Python/bin/python"
         End
     End
 End
