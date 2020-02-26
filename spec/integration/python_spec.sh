@@ -14,7 +14,7 @@ Context "When on Travis CI"
 
         # Workaround for bug https://github.com/shellspec/shellspec/issues/30
         python_version() {
-            python --version
+            python --version 2>&1
         }
 
         python_location() {
