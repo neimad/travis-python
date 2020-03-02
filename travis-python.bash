@@ -487,7 +487,7 @@ install_python() {
     # The specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
     #
-    # When OS is Linux or macOS, pyenv is used, on Windows, Chocolatey is used.
+    # When OS is Linux or macOS, python-build is used, on Windows, Chocolatey is used.
     #
     __strict_mode
 
