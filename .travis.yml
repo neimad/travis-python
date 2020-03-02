@@ -18,7 +18,9 @@ addons:
       - kcov
 
 install:
-  - curl -sSL https://git.io/shellspec | sh -s -- -y
+  - wget https://github.com/shellspec/shellspec/archive/master.tar.gz
+  - tar -C $HOME -xzf master.tar.gz
+  - PATH=$HOME/shellspec-master:$PATH
 
 before_script:
   - shellspec --syntax-check
