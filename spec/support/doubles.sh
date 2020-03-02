@@ -43,8 +43,8 @@ stub() {
     local -i status=0
     local code
 
-    while getopts "o:e:s:" OPT; do
-        case "$OPT" in
+    while getopts 'o:e:s:' OPT; do
+        case $OPT in
             o)
                 has_output=1
                 output=$OPTARG
