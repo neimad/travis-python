@@ -127,6 +127,7 @@ Describe "install_python()"
             The command "pyenv" should not be called
             The line 2 of output should equal "Installed Python 3.7.2."
             The variable PATH should start with "$directory/bin:"
+            The line 3 of output should be blank
         End
     End
 
@@ -147,6 +148,7 @@ Describe "install_python()"
             The command "pyenv" should not be called
             The line 2 of output should equal "Installed Python 3.7.2."
             The variable PATH should start with "$directory/bin:"
+            The line 3 of output should be blank
         End
     End
 
@@ -164,6 +166,7 @@ Describe "install_python()"
             The command "choco install python --version=3.7.2" should be called
             The line 2 of output should equal "Installed Python 3.7.2."
             The variable PATH should start with "$directory:$directory/Scripts"
+            The line 3 of output should be blank
         End
     End
 End

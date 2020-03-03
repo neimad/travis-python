@@ -50,6 +50,7 @@ Describe "spy()"
         When call foo; foo "bar"
         The line 1 of contents of file spy-calls should equal "foo"
         The line 2 of contents of file spy-calls should equal "foo bar"
+        The line 3 of contents of file spy-calls should be blank
     End
 End
 

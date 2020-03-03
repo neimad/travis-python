@@ -30,6 +30,7 @@ Describe "__available_python_versions_from_chocolatey()"
         The line 5 of output should equal "3.8.0-a5"
         The line 6 of output should equal "3.8.0-b2"
         The line 7 of output should equal "3.8.1"
+        The line 8 of output should be blank
     End
 
     It "gives an empty output if no version are available"

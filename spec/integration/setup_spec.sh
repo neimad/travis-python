@@ -40,6 +40,7 @@ Context "When on Travis CI"
                 The line 2 of output should equal "Installing latest python-build to $TRAVIS_PYTHON_DIR/builder..."
                 The line 3 of output should start with "Installed python-build"
                 The line 4 of output should equal "Python tools for Travis CI loaded."
+                The line 5 of output should be blank
                 The result of function "python_build_version" should match pattern 'python-build ????????'
                 The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
                 The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
