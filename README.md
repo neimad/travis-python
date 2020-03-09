@@ -5,6 +5,7 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 ![Supported Python versions][python-versions-badge]
 ![Supported Operating Systems][os-badge]
 [![Build Status][ci-badge]][ci]
+[![Coverage Status][cov-badge]][coverage]
 [![License][license-badge]][license]
 
 > :warning: This project is under development and not stable at all! Please
@@ -135,6 +136,7 @@ License
 [python-versions-badge]: https://img.shields.io/badge/python-2.7%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
 [os-badge]: https://img.shields.io/badge/OS-Linux%20|%20macOS%20|%20Windows-blueviolet?style=flat-square
 [ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
+[cov-badge]: https://img.shields.io/coveralls/github/neimad/travis-python?style=flat-square
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
 
 [license]: LICENSE.md
@@ -143,6 +145,7 @@ License
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
 [ci]: https://travis-ci.com/neimad/travis-python
+[coverage]: https://coveralls.io/github/neimad/travis-python
 
 [travis-python-versions]: https://docs.travis-ci.com/user/languages/python/#specifying-python-versions
 [import the shared configuration snippet]: https://docs.travis-ci.com/user/build-config-imports/
