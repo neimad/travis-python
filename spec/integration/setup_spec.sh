@@ -15,24 +15,8 @@ Context "When on Travis CI"
             command -v python-build
         }
 
-        Context "when on a Linux platform"
-            Skip if "not on Linux platform" test "${TRAVIS_OS_NAME:-}" != 'linux'
-
-            It "installs python-build"
-                When call __travis_python_setup
-                The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
-                The line 2 of output should equal "Installing latest python-build to $TRAVIS_PYTHON_DIR/builder..."
-                The line 3 of output should start with "Installed python-build"
-                The line 4 of output should equal "Python tools for Travis CI loaded."
-                The line 5 of output should be blank
-                The result of function "python_build_version" should match pattern 'python-build ????????'
-                The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
-                The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
-            End
-        End
-
-        Context "when on a macOS platform"
-            Skip if "not on macOS platform" test "${TRAVIS_OS_NAME:-}" != 'osx'
+        Context "when on a Unix platform"
+            Skip if "not on Unix platform" test "${TRAVIS_OS_NAME:-}" != 'linux' -a "${TRAVIS_OS_NAME:-}" != 'osx'
 
             It "installs python-build"
                 When call __travis_python_setup
