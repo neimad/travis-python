@@ -1,5 +1,39 @@
 language: shell
 
+stages:
+  - units
+  - integration
+
+install:
+  - wget https://github.com/shellspec/shellspec/archive/master.tar.gz
+  - tar -C $HOME -xzf master.tar.gz
+  - PATH=$HOME/shellspec-master:$PATH
+
+jobs:
+  include:
+    - stage: units
+      os: linux
+      env:
+      before_script: shellspec --syntax-check
+      script: shellspec --no-banner spec/units
+    - stage: units
+      os: osx
+      env:
+      addons:
+        homebrew:
+          update: true
+          packages:
+            - kcov
+      before_script: shellspec --syntax-check
+      script: shellspec --no-banner --kcov spec/units
+    - stage: units
+      os: windows
+      env:
+      before_script: shellspec --syntax-check
+      script: shellspec --no-banner spec/units
+
+stage: integration
+
 os:
   - linux
   - osx
@@ -11,24 +45,5 @@ env:
   - PYTHON=3.6
   - PYTHON=2.7
 
-addons:
-  homebrew:
-    update: true
-    packages:
-      - kcov
 
-install:
-  - wget https://github.com/shellspec/shellspec/archive/master.tar.gz
-  - tar -C $HOME -xzf master.tar.gz
-  - PATH=$HOME/shellspec-master:$PATH
-
-before_script:
-  - shellspec --syntax-check
-
-script:
-  - |
-    if [[ $TRAVIS_OS_NAME = osx ]]; then
-      SHELLSPEC_FLAGS="--kcov"
-    fi
-  - shellspec --no-banner $SHELLSPEC_FLAGS spec/units
-  - shellspec --no-banner $SHELLSPEC_FLAGS spec/integration
+script: shellspec --no-banner spec/integration
