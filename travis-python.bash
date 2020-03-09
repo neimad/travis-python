@@ -260,9 +260,18 @@ __windows_path() {
     converted=${path//\//\\}
 
     if [[ $converted == \\* ]]; then
-        # If it is an absolute path, convert the first component to a drive letter
-        drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}")
-        converted="$drive_letter:${converted:2}"
+        # If it is an absolute path...
+        if [[ ${converted:2:1} == \\ ]]; then
+            # ... and the first component is a single letter, convert it to a
+            # drive letter.
+            drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}")
+            converted="$drive_letter:${converted:2}"
+        elif [[ ${converted:0:5} == \\tmp\\ ]]; then
+            # ... and the first component is the temporary directory, convert it
+            # to the Windows user temporary directory path.
+            converted="C:\Users\\$USER\AppData\Local\Temp\\${converted:5}"
+        fi
+
     fi
 
     echo "$converted"

@@ -36,6 +36,7 @@ Describe "__windows_path()"
         "a path relative to the current directory"  "./foo/bar"     ".\foo\bar"
         "a path relative to the parrent directory"  "../foo/bar"    "..\foo\bar"
         "an absolute path"                          "/c/foo/bar"    "C:\foo\bar"
+        "a temporary path"                          "/tmp/foo"      "C:\Users\\$USER\AppData\Local\Temp\foo"
     End
 
     It "converts $1 to Windows flavor"
