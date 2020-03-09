@@ -11,26 +11,22 @@ install:
 
 jobs:
   include:
-    - stage: units
+    - &units
+      stage: units
       os: linux
       env:
       before_script: shellspec --syntax-check
       script: shellspec --no-banner spec/units
-    - stage: units
+    - <<: *units
       os: osx
-      env:
       addons:
         homebrew:
           update: true
           packages:
             - kcov
-      before_script: shellspec --syntax-check
       script: shellspec --no-banner --kcov spec/units
-    - stage: units
+    - <<: *units
       os: windows
-      env:
-      before_script: shellspec --syntax-check
-      script: shellspec --no-banner spec/units
 
 stage: integration
 
