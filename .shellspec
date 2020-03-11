@@ -1,3 +1,4 @@
 --shell /bin/bash --require helper
---kcov-options "--include-pattern=travis-python.bash" --fail-low-coverage
+--kcov-options "--include-pattern=travis-python.bash --exclude-line=NOT_COVERED,NOT_COVERABLE --exclude-region=NOT_COVERED_START:NOT_COVERED_STOP"
+--fail-low-coverage
 --fail-no-examples

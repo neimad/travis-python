@@ -5,8 +5,8 @@
 TRAVIS_PYTHON_VERSION="0.1.3"
 TRAVIS_PYTHON_DIR=$HOME/travis-python
 
-readonly __TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$TRAVIS_PYTHON_DIR/silent_output
-readonly __TRAVIS_PYTHON_SILENT_ERROR_FILE=$TRAVIS_PYTHON_DIR/silent_error
+__TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$TRAVIS_PYTHON_DIR/silent_output
+__TRAVIS_PYTHON_SILENT_ERROR_FILE=$TRAVIS_PYTHON_DIR/silent_error
 
 readonly __EXIT_FAILURE=1
 
@@ -18,7 +18,7 @@ __print_info() {
     local message=${1:?the message must be specified}
 
     if [[ -t 1 ]]; then
-        message="\033[0;33m$message\033[0m"
+        message="\033[0;33m$message\033[0m" # NOT_COVERED
     fi
 
     echo -e "$message"
@@ -32,7 +32,7 @@ __print_success() {
     local message=${1:?the message must be specified}
 
     if [[ -t 1 ]]; then
-        message="\033[0;32m$message\033[0m"
+        message="\033[0;32m$message\033[0m" # NOT_COVERED
     fi
 
     echo -e "$message"
@@ -46,7 +46,7 @@ __print_error() {
     local message=${1:?the message must be specified}
 
     if [[ -t 1 ]]; then
-        message="\033[0;31m$message\033[0m"
+        message="\033[0;31m$message\033[0m" # NOT_COVERED
     fi
 
     echo -e "$message" >&2
@@ -88,7 +88,7 @@ __travis_python_error() {
         output=$(<"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE")
 
         if [[ -n $output ]]; then
-            __print_error $'\nCommand Standard Output\n-----------------------'
+            __print_error $'\nCommand standard output\n-----------------------'
             __print_error "$output"
         fi
     fi
@@ -97,7 +97,7 @@ __travis_python_error() {
         error=$(<"$__TRAVIS_PYTHON_SILENT_ERROR_FILE")
 
         if [[ -n $error ]]; then
-            __print_error $'\nCommand Standard Error\n----------------------'
+            __print_error $'\nCommand standard error\n----------------------'
             __print_error "$error"
         fi
     fi
@@ -119,6 +119,7 @@ __travis_python_error() {
                 command_line=${FUNCNAME[i]}
 
                 if ((BASH_ARGC[i] > 0)); then
+                    # NOT_COVERED_START
                     arguments=
 
                     for ((args_left = BASH_ARGC[i]; args_left > 0; args_left--)); do
@@ -127,6 +128,7 @@ __travis_python_error() {
                     done
 
                     command_line="$command_line $arguments"
+                    # NOT_COVERED_STOP
                 fi
             fi
 
@@ -141,9 +143,12 @@ __travis_python_error() {
     __print_error $'\nEnvironment\n-----------'
     __print_error "Bash $BASH_VERSION"
     __print_error "  invoked as $BASH"
-    __print_error "  in process $$."
+    __print_error "  in process $$"
+    __print_error "  with shell options:"
+    __print_error "    - ${SHELLOPTS//:/$'\n    - '}"
     __print_error "Working in directory $PWD."
-    __print_error "Using PATH: \n  - ${PATH//:/$'\n  - '}"
+    __print_error "Using PATH:"
+    __print_error "  - ${PATH//:/$'\n  - '}"
 }
 
 __strict_mode() {
@@ -308,8 +313,7 @@ __latest_matching_version() {
     shopt -s extglob
 
     for version in "${versions[@]}"; do
-        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && \
-            $version =~ ^${specifier_pattern} ]]; then
+        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && $version =~ ^${specifier_pattern} ]]; then
             found_version="$version"
         fi
     done
@@ -420,7 +424,7 @@ __available_python_versions_from_builder() {
         if [[ -n $version ]]; then
             versions+=("$version")
         fi
-    done < <(python-build --definitions)
+    done < <(python-build --definitions) # NOT_COVERABLE
 
     if ((${#versions[@]} > 0)); then
         IFS=$'\n'
@@ -574,4 +578,4 @@ __travis_python_setup() {
 
 ${__SOURCED__:+'return'} # Prevent execution while testing
 
-__travis_python_setup
+__travis_python_setup # NOT_COVERABLE because of previous line
