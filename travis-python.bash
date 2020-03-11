@@ -178,7 +178,7 @@ __strict_mode() {
     set -o pipefail
 
     if [[ ${TRAVIS:-} != 'true' ]]; then
-        set -o nounset
+        set -o nounset # NOT_COVERABLE on Travis CI.
     fi
 
     shopt -s extdebug
