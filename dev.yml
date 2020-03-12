@@ -1,9 +1,11 @@
 # Travis CI configuration snippet to use the latest development version of
 # travis-python.
 #
-# Just import it in your Travis CI configuration:
+# Just import it in your Travis CI configuration with a deep merge:
 #
-#  import: neimad/travis-python:dev.yml
+#  import:
+#    - source: neimad/travis-python:dev.yml
+#      mode: deep_merge_prepend
 #
 
 language: shell
