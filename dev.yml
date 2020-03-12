@@ -3,17 +3,26 @@
 #
 # Just import it in your Travis CI configuration with a deep merge:
 #
-#  import:
-#    - source: neimad/travis-python:dev.yml
-#      mode: deep_merge_prepend
+#   import:
+#     - source: neimad/travis-python:dev.yml
+#       mode: deep_merge_prepend
+#
+# Then create a jobs matrix by specifying the operating systems to use and the
+# Python distributions to install:
+#
+#   os:
+#     - linux
+#     - osx
+#     - windows
+#
+#   env:
+#     - PYTHON=3.8
+#     - PYTHON=3.7
+#     - PYTHON=3.6
+#     - PYTHON=2.7
 #
 
 language: shell
-
-os:
-  - linux
-  - osx
-  - windows
 
 before_install:
   - wget https://raw.githubusercontent.com/neimad/travis-python/master/travis-python.bash
