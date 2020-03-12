@@ -179,11 +179,7 @@ __strict_mode() {
     set -o errexit
     set -o errtrace
     set -o pipefail
-
-    if [[ ${TRAVIS:-} != 'true' ]]; then
-        set -o nounset # NOT_COVERABLE on Travis CI.
-    fi
-
+    set -o nounset
     shopt -s extdebug
     __ORIG_IFS="${IFS:-}"
     IFS=$'\n\t'
