@@ -69,7 +69,7 @@ __travis_python_error() {
     #
     local -r status=${1:-$?}
 
-    __strict_mode
+    __be_strict
 
     local -r failing_command=$BASH_COMMAND
     local output
@@ -151,8 +151,8 @@ __travis_python_error() {
     __print_error "  - ${PATH//:/$'\n  - '}"
 }
 
-__strict_mode() {
-    # __strict_mode
+__be_strict() {
+    # __be_strict
     #
     # Activates the unofficial Bash strict mode.
     #
@@ -186,12 +186,12 @@ __strict_mode() {
     trap '__travis_python_error' ERR
 }
 
-__kind_mode() {
-    # __kind_mode
+__be_kind() {
+    # __be_kind
     #
     # Desactivates the unofficial Bash strict mode.
     #
-    # Everything set using the function __strict_mode is reverted.
+    # Everything set using the function __be_strict is reverted.
     #
     set +o errexit
     set +o errtrace
@@ -207,7 +207,7 @@ __trim() {
     #
     # Trims leading and trailing whitespace characters from given string.
     #
-    __strict_mode
+    __be_strict
 
     local string=${1?the string must be specified}
 
@@ -217,7 +217,7 @@ __trim() {
 
     echo "$string"
 
-    __kind_mode
+    __be_kind
 }
 
 __init_file() {
@@ -228,14 +228,14 @@ __init_file() {
     # All parent directories are created if needed. If the file already exists,
     # it is overwritten.
     #
-    __strict_mode
+    __be_strict
 
     local -r path=${1:?the path must be specified}
 
     mkdir -p "$(dirname "$path")"
     : >|"$path"
 
-    __kind_mode
+    __be_kind
 }
 
 __run_silent() {
@@ -247,7 +247,7 @@ __run_silent() {
     # and stderr). If the command exists with a status code other than 0, its
     # output will be available to the `__travis_python_error` handler.
     #
-    __strict_mode
+    __be_strict
 
     : "${1:?the command must be specified}"
     local -i status
@@ -269,7 +269,7 @@ __run_silent() {
         rm -f "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
     fi
 
-    __kind_mode
+    __be_kind
 
     return $status
 }
@@ -279,7 +279,7 @@ __windows_path() {
     #
     # Converts a Unix path to Windows flavor.
     #
-    __strict_mode
+    __be_strict
 
     local -r path=${1:?the path must be specified}
     local converted
@@ -305,7 +305,7 @@ __windows_path() {
 
     echo "$converted"
 
-    __kind_mode
+    __be_kind
 }
 
 __latest_matching_version() {
@@ -319,7 +319,7 @@ __latest_matching_version() {
     #
     # Only stable versions are considered.
     #
-    __strict_mode
+    __be_strict
 
     local -r specifier=${1:?the specifier must be specified}
     local -r specifier_pattern=${specifier//./"\."}
@@ -346,7 +346,7 @@ __latest_matching_version() {
 
     echo "$found_version"
 
-    __kind_mode
+    __be_kind
 }
 
 __latest_git_tag() {
@@ -355,13 +355,13 @@ __latest_git_tag() {
     # Gives the latest tag from the Git repository located at the specified
     # directory.
     #
-    __strict_mode
+    __be_strict
 
     local -r directory=${1:?the directory must be specified}
 
     git -C "$directory" describe --abbrev=0 --tags
 
-    __kind_mode
+    __be_kind
 }
 
 __update_git_repo() {
@@ -374,7 +374,7 @@ __update_git_repo() {
     # Otherwise, it is only fetched.
     # Then, the latest tag is checked out.
     #
-    __strict_mode
+    __be_strict
 
     local -r url=${1:?the URL must be specified}
     local -r directory=${2:?the directory must be specified}
@@ -389,7 +389,7 @@ __update_git_repo() {
     latest_tag=$(__latest_git_tag "$directory")
     __run_silent git -C "$directory" checkout "$latest_tag" --detach
 
-    __kind_mode
+    __be_kind
 }
 
 __current_builder_version() {
@@ -397,7 +397,7 @@ __current_builder_version() {
     #
     # Gives the current version of python-build.
     #
-    __strict_mode
+    __be_strict
 
     local version
 
@@ -407,7 +407,7 @@ __current_builder_version() {
 
     echo "$version"
 
-    __kind_mode
+    __be_kind
 }
 
 __install_builder() {
@@ -422,7 +422,7 @@ __install_builder() {
     # The `PATH` is updated to include the `bin` directory and the shell
     # commands hash table is reset.
     #
-    __strict_mode
+    __be_strict
 
     local directory=${1:?the installation directory must be specified}
     local -r repo_url="https://github.com/pyenv/pyenv"
@@ -440,7 +440,7 @@ __install_builder() {
 
     __print_success "Installed python-build $(__current_builder_version)."
 
-    __kind_mode
+    __be_kind
 }
 
 __available_python_versions_from_builder() {
@@ -448,7 +448,7 @@ __available_python_versions_from_builder() {
     #
     # Gives the list of Python versions available from python-build.
     #
-    __strict_mode
+    __be_strict
 
     local versions
     local versions=()
@@ -467,7 +467,7 @@ __available_python_versions_from_builder() {
         echo "${versions[*]}"
     fi
 
-    __kind_mode
+    __be_kind
 }
 
 __available_python_versions_from_chocolatey() {
@@ -475,7 +475,7 @@ __available_python_versions_from_chocolatey() {
     #
     # Gives the list of Python versions available from Chocolatey.
     #
-    __strict_mode
+    __be_strict
 
     local output
     local version
@@ -498,7 +498,7 @@ __available_python_versions_from_chocolatey() {
         echo "${versions[*]}"
     fi
 
-    __kind_mode
+    __be_kind
 }
 
 __available_python_versions() {
@@ -506,7 +506,7 @@ __available_python_versions() {
     #
     # Gives the list of Python versions available on the current platform.
     #
-    __strict_mode
+    __be_strict
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __available_python_versions_from_chocolatey
@@ -514,7 +514,7 @@ __available_python_versions() {
         __available_python_versions_from_builder
     fi
 
-    __kind_mode
+    __be_kind
 }
 
 __current_python_version() {
@@ -522,7 +522,7 @@ __current_python_version() {
     #
     # Gives the current version of Python.
     #
-    __strict_mode
+    __be_strict
 
     local version
 
@@ -532,7 +532,7 @@ __current_python_version() {
 
     echo "$version"
 
-    __kind_mode
+    __be_kind
 }
 
 install_python() {
@@ -546,7 +546,7 @@ install_python() {
     #
     # When OS is Linux or macOS, python-build is used, on Windows, Chocolatey is used.
     #
-    __strict_mode
+    __be_strict
 
     local -r location=${1:?the installation directory must be specified}
     local -r specifier=${2:?the specifier must be specified}
@@ -589,7 +589,7 @@ install_python() {
 
     __print_success "Installed Python $(__current_python_version)."
 
-    __kind_mode
+    __be_kind
 }
 
 __travis_python_setup() {
@@ -598,7 +598,7 @@ __travis_python_setup() {
     # Setups Python tools for Travis CI for installation within specified
     # directory.
     #
-    __strict_mode
+    __be_strict
 
     : "${TRAVIS_OS_NAME:?must be set and not null}"
 
@@ -621,7 +621,7 @@ __travis_python_setup() {
 
     __print_success "Python tools for Travis CI loaded."
 
-    __kind_mode
+    __be_kind
 }
 
 ${__SOURCED__:+'return'} # Prevent execution while testing
