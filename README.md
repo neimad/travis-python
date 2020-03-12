@@ -8,9 +8,6 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 [![Coverage Status][cov-badge]][coverage]
 [![License][license-badge]][license]
 
-> :warning: This project is under development and not stable at all! Please
-> wait for the first stable version before using it in production.
-
 _travis-python_ is just a Bash script providing a helper function:
 
 ```bash
@@ -41,7 +38,7 @@ The easiest way to do it is to [import the shared configuration snippet]:
 
 ```yaml
 import:
-  - source: neimad/travis-python:dev.yml
+  - source: neimad/travis-python:stable.yml
     mode: deep_merge_prepend
 ```
 
