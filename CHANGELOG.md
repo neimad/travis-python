@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
 
+## [1.0.0] - 2020-03-12
+### Added
+ - Travis CI build stages.
+ - Unit tests coverage using Kcov.
+ - Coverage results upload to Coveralls.
+
+### Fixed
+ - Unit tests using Shellspec on Linux, macOS and Windows.
+ - Temporary directory path conversion.
+
 ## [0.1.3] - 2020-02-02
 ### Added
  - Travis CI shared configuration snippet intented to be sourced in user
@@ -44,7 +54,8 @@ and this project adheres to [Semantic Versioning].
  - README file containing information about the expected UX and the initial
    direction of the project.
 
-[Unreleased]: https://github.com/neimad/travis-python/compare/0.1.3...HEAD
+[Unreleased]: https://github.com/neimad/travis-python/compare/1.0.0...HEAD
+[1.0.0]: https://github.com/neimad/travis-python/compare/0.1.3...1.0.0
 [0.1.3]: https://github.com/neimad/travis-python/compare/0.1.2...0.1.3
 [0.1.2]: https://github.com/neimad/travis-python/compare/0.1.1...0.1.2
 [0.1.1]: https://github.com/neimad/travis-python/compare/0.1.0...0.1.1
