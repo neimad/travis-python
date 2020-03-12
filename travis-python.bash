@@ -173,6 +173,9 @@ __strict_mode() {
     # strict mode, behaviors are disabled when on a Travis CI machine:
     #  - expanding unset parameters is not treated as an error.
     #
+    export __ORIG_IFS
+    export IFS
+
     set -o errexit
     set -o errtrace
     set -o pipefail
@@ -182,8 +185,25 @@ __strict_mode() {
     fi
 
     shopt -s extdebug
+    __ORIG_IFS="${IFS:-}"
     IFS=$'\n\t'
     trap '__travis_python_error' ERR
+}
+
+__kind_mode() {
+    # __kind_mode
+    #
+    # Desactivates the unofficial Bash strict mode.
+    #
+    # Everything set using the function __strict_mode is reverted.
+    #
+    set +o errexit
+    set +o errtrace
+    set +o pipefail
+    set +o nounset
+    shopt -u extdebug
+    IFS="$__ORIG_IFS"
+    trap '' ERR
 }
 
 __trim() {
@@ -200,6 +220,8 @@ __trim() {
     string=${string%%+([[:space:]])}
 
     echo "$string"
+
+    __kind_mode
 }
 
 __init_file() {
@@ -210,10 +232,14 @@ __init_file() {
     # All parent directories are created if needed. If the file already exists,
     # it is overwritten.
     #
+    __strict_mode
+
     local -r path=${1:?the path must be specified}
 
     mkdir -p "$(dirname "$path")"
     : >|"$path"
+
+    __kind_mode
 }
 
 __run_silent() {
@@ -246,6 +272,8 @@ __run_silent() {
         rm -f "$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
         rm -f "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
     fi
+
+    __kind_mode
 
     return $status
 }
@@ -280,6 +308,8 @@ __windows_path() {
     fi
 
     echo "$converted"
+
+    __kind_mode
 }
 
 __latest_matching_version() {
@@ -319,6 +349,8 @@ __latest_matching_version() {
     done
 
     echo "$found_version"
+
+    __kind_mode
 }
 
 __latest_git_tag() {
@@ -332,6 +364,8 @@ __latest_git_tag() {
     local -r directory=${1:?the directory must be specified}
 
     git -C "$directory" describe --abbrev=0 --tags
+
+    __kind_mode
 }
 
 __update_git_repo() {
@@ -358,6 +392,8 @@ __update_git_repo() {
 
     latest_tag=$(__latest_git_tag "$directory")
     __run_silent git -C "$directory" checkout "$latest_tag" --detach
+
+    __kind_mode
 }
 
 __current_builder_version() {
@@ -374,6 +410,8 @@ __current_builder_version() {
     version=$(__trim "$version")
 
     echo "$version"
+
+    __kind_mode
 }
 
 __install_builder() {
@@ -405,6 +443,8 @@ __install_builder() {
     hash -r
 
     __print_success "Installed python-build $(__current_builder_version)."
+
+    __kind_mode
 }
 
 __available_python_versions_from_builder() {
@@ -430,6 +470,8 @@ __available_python_versions_from_builder() {
         IFS=$'\n'
         echo "${versions[*]}"
     fi
+
+    __kind_mode
 }
 
 __available_python_versions_from_chocolatey() {
@@ -459,6 +501,8 @@ __available_python_versions_from_chocolatey() {
         IFS=$'\n'
         echo "${versions[*]}"
     fi
+
+    __kind_mode
 }
 
 __available_python_versions() {
@@ -473,6 +517,8 @@ __available_python_versions() {
     else
         __available_python_versions_from_builder
     fi
+
+    __kind_mode
 }
 
 __current_python_version() {
@@ -489,6 +535,8 @@ __current_python_version() {
     version=$(__trim "$version")
 
     echo "$version"
+
+    __kind_mode
 }
 
 install_python() {
@@ -544,6 +592,8 @@ install_python() {
     hash -r
 
     __print_success "Installed Python $(__current_python_version)."
+
+    __kind_mode
 }
 
 __travis_python_setup() {
@@ -574,6 +624,8 @@ __travis_python_setup() {
     esac
 
     __print_success "Python tools for Travis CI loaded."
+
+    __kind_mode
 }
 
 ${__SOURCED__:+'return'} # Prevent execution while testing
