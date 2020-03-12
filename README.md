@@ -8,25 +8,13 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 [![Coverage Status][cov-badge]][coverage]
 [![License][license-badge]][license]
 
-_travis-python_ is just a Bash script providing a helper function:
+_travis-python_ aims to provide a simple way to install a Python distribution
+on the Travis CI machines, available on the three operating systems available.
 
-```bash
-install_python <location> <specifier>
-```
+You need source the provided Bash script and call the [install_python()]
+function.
 
-The specified Python version, if found, will be installed at the specified
-`location`.
-
-The `specifier` is similar to [the `python` key available in the Travis CI configuration file][travis-python-versions]:
-
- - if a full version is specified (e.g. `2.7.1`), that version is installed, if
-   available,
- - if the patch version is ignored (e.g. `3.7`) the latest matching stable
-   version available is installed, if any,
- - if only the major version is specified (e.g. `3`) the latest matching
-   stable version available is installed, if any.
-
-> :warning: Version constraints (e.g. `~`, `^` or `*`) are NOT supported.
+Or just use the shared configuration snippet as stated below.
 
 Usage
 -----
@@ -139,6 +127,7 @@ License
 [license]: LICENSE.md
 [the changelog]: CHANGELOG.md
 [the configuration documentation]: doc/Travis_Configuration.md
+[install_python()]: doc/install_python.md
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
 [ci]: https://travis-ci.com/neimad/travis-python
