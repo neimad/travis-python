@@ -5,8 +5,8 @@
 TRAVIS_PYTHON_VERSION="1.0.0"
 TRAVIS_PYTHON_DIR=$HOME/travis-python
 
-__TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$TRAVIS_PYTHON_DIR/silent_output
-__TRAVIS_PYTHON_SILENT_ERROR_FILE=$TRAVIS_PYTHON_DIR/silent_error
+__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME=silent_output
+__TRAVIS_PYTHON_SILENT_ERROR_FILENAME=silent_error
 
 readonly __EXIT_FAILURE=1
 
@@ -68,10 +68,12 @@ __travis_python_error() {
     # The status code of the command might be specified.
     #
     local -r status=${1:-$?}
+    local -r failing_command=$BASH_COMMAND
 
     __be_strict
 
-    local -r failing_command=$BASH_COMMAND
+    local -r silent_output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
+    local -r silent_error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
     local output
     local error
     local -i i
@@ -84,8 +86,8 @@ __travis_python_error() {
     __print_error "\`$failing_command\` exited with status $status."
 
     # Print output of silenced command.
-    if [[ -s $__TRAVIS_PYTHON_SILENT_OUTPUT_FILE ]]; then
-        output=$(<"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE")
+    if [[ -s $silent_output_file ]]; then
+        output=$(<"$silent_output_file")
 
         if [[ -n $output ]]; then
             __print_error $'\nCommand standard output\n-----------------------'
@@ -93,8 +95,8 @@ __travis_python_error() {
         fi
     fi
 
-    if [[ -s $__TRAVIS_PYTHON_SILENT_ERROR_FILE ]]; then
-        error=$(<"$__TRAVIS_PYTHON_SILENT_ERROR_FILE")
+    if [[ -s $silent_error_file ]]; then
+        error=$(<"$silent_error_file")
 
         if [[ -n $error ]]; then
             __print_error $'\nCommand standard error\n----------------------'
@@ -250,23 +252,25 @@ __run_silent() {
     __be_strict
 
     : "${1:?the command must be specified}"
+    local -r output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
+    local -r error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
     local -i status
 
     # The files are (re)initialized. This is important in order to clear output
     # from a previously silenced command.
-    __init_file "$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
-    __init_file "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+    __init_file "$output_file"
+    __init_file "$error_file"
 
     # Then the stdout and stderr streams are redirected to them.
     set +e
-    "$@" >"$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE" 2>"$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+    "$@" >"$output_file" 2>"$error_file"
     status=$?
     set -e
 
     # If the command succeed, the files are removed.
     if ((status == 0)); then
-        rm -f "$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
-        rm -f "$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+        rm -f "$output_file"
+        rm -f "$error_file"
     fi
 
     __be_kind

@@ -40,8 +40,8 @@ Describe "__run_silent()"
     It "makes the output of the command available"
         stub 'foo' -o "Foo output" -e "Foo error" -s 25
 
-        Path output="$__TRAVIS_PYTHON_SILENT_OUTPUT_FILE"
-        Path error="$__TRAVIS_PYTHON_SILENT_ERROR_FILE"
+        Path output="$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME"
+        Path error="$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME"
 
         When call __run_silent foo
         The status should equal 25

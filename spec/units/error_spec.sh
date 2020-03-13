@@ -18,13 +18,9 @@ Describe "__travis_python_error()"
         The line 4 of error should match pattern "\`*\` exited with status ?."
     End
 
-    Before 'setup_directory'
-    After 'cleanup_directory'
-    directory=${directory:-}
-
     It "prints standard output of the silenced command"
-        __TRAVIS_PYTHON_SILENT_OUTPUT_FILE=$directory/output
-        echo "output" >"${__TRAVIS_PYTHON_SILENT_OUTPUT_FILE:-}"
+        stub foo -o "output" -s 1
+        __run_silent foo
 
         When call __travis_python_error
         The status should be success
@@ -35,8 +31,8 @@ Describe "__travis_python_error()"
     End
 
     It "prints standard error of the silenced command"
-        __TRAVIS_PYTHON_SILENT_ERROR_FILE=$directory/error
-        echo "error" >"${__TRAVIS_PYTHON_SILENT_ERROR_FILE:-}"
+        stub foo -e "error" -s 1
+        __run_silent foo
 
         When call __travis_python_error
         The status should be success

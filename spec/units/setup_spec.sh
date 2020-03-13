@@ -42,7 +42,7 @@ Describe "__travis_python_setup()"
             spy '__install_builder'
 
             When call __travis_python_setup
-            The command "__install_builder $HOME/travis-python/builder" should be called
+            The command "__install_builder $TRAVIS_PYTHON_DIR/builder" should be called
             The output should not be blank
         End
     End
@@ -61,7 +61,7 @@ Describe "__travis_python_setup()"
             spy '__install_builder'
 
             When call __travis_python_setup
-            The command "__install_builder $HOME/travis-python/builder" should be called
+            The command "__install_builder $TRAVIS_PYTHON_DIR/builder" should be called
             The output should not be blank
         End
     End
