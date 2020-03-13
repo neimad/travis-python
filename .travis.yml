@@ -11,9 +11,6 @@ install:
   - PATH=$HOME/shellspec-master:$PATH
 
 jobs:
-  fast_finish: true
-  allow_failures:
-    - env: COVERAGE=true
   include:
     - &units
       stage: units
@@ -25,10 +22,10 @@ jobs:
       os: osx
     - <<: *units
       os: windows
-    - <<: *units
-      name: Coverage
-      env: COVERAGE=true
+
+    - stage: Coverage
       os: osx
+      env:
       addons:
         homebrew:
           update: true
