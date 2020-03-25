@@ -6,9 +6,8 @@ stages:
   - integration
 
 install:
-  - wget https://github.com/shellspec/shellspec/archive/master.tar.gz
-  - tar -C $HOME -xzf master.tar.gz
-  - PATH=$HOME/shellspec-master:$PATH
+  - curl -fsSL https://git.io/shellspec | sh -s -- -y master
+  - PATH=$HOME/.local/bin:$PATH
 
 jobs:
   include:
