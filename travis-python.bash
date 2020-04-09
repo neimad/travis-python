@@ -3,7 +3,7 @@
 # This file is part of travis-python.
 
 TRAVIS_PYTHON_VERSION="1.0.0"
-TRAVIS_PYTHON_DIR=$HOME/travis-python
+: "${TRAVIS_PYTHON_DIR:=$HOME/travis-python}"
 
 __TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME=silent_output
 __TRAVIS_PYTHON_SILENT_ERROR_FILENAME=silent_error
@@ -539,6 +539,38 @@ __current_python_version() {
     __be_kind
 }
 
+__travis_python_setup() {
+    # __travis_python_setup
+    #
+    # Setups Python tools for Travis CI for installation within specified
+    # directory.
+    #
+    __be_strict
+
+    : "${TRAVIS_OS_NAME:?must be set and not null}"
+
+    __print_info "travis-python $TRAVIS_PYTHON_VERSION"
+
+    case $TRAVIS_OS_NAME in
+        windows)
+            # Workaround for https://github.com/chocolatey/choco/issues/1843
+            __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
+            __print_success "Installed Chocolatey $(choco --version)."
+            ;;
+        linux | osx)
+            __install_builder "$TRAVIS_PYTHON_DIR/builder"
+            ;;
+        *)
+            __print_error "The '$TRAVIS_OS_NAME' platform is not supported."
+            return $__EXIT_FAILURE
+            ;;
+    esac
+
+    __print_success "Python tools for Travis CI loaded."
+
+    __be_kind
+}
+
 install_python() {
     # install_python <directory> <specifier>
     #
@@ -592,38 +624,6 @@ install_python() {
     hash -r
 
     __print_success "Installed Python $(__current_python_version)."
-
-    __be_kind
-}
-
-__travis_python_setup() {
-    # __travis_python_setup
-    #
-    # Setups Python tools for Travis CI for installation within specified
-    # directory.
-    #
-    __be_strict
-
-    : "${TRAVIS_OS_NAME:?must be set and not null}"
-
-    __print_info "travis-python $TRAVIS_PYTHON_VERSION"
-
-    case $TRAVIS_OS_NAME in
-        windows)
-            # Workaround for https://github.com/chocolatey/choco/issues/1843
-            __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
-            __print_success "Installed Chocolatey $(choco --version)."
-            ;;
-        linux | osx)
-            __install_builder "$TRAVIS_PYTHON_DIR/builder"
-            ;;
-        *)
-            __print_error "The '$TRAVIS_OS_NAME' platform is not supported."
-            return $__EXIT_FAILURE
-            ;;
-    esac
-
-    __print_success "Python tools for Travis CI loaded."
 
     __be_kind
 }

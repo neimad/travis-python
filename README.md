@@ -55,6 +55,11 @@ available on Travis CI (Linux, macOS and Windows).
 The Python distribution is installed during the `before_install` phase and
 available using the `python` program name (whether it is Python 2 or 3).
 
+Documentation
+-------------
+
+[Some documentation] is available.
+
 Behind the scene
 ----------------
 
@@ -128,6 +133,7 @@ License
 [the changelog]: CHANGELOG.md
 [the configuration documentation]: doc/Travis_Configuration.md
 [install_python()]: doc/install_python.md
+[some documentation]: doc/README.md
 [look at the existing tickets]: https://github.com/neimad/travis-python/issues
 [make a pull request]: https://github.com/neimad/travis-python/pulls
 [ci]: https://travis-ci.com/neimad/travis-python
