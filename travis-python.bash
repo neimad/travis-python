@@ -10,34 +10,6 @@ __TRAVIS_PYTHON_SILENT_ERROR_FILENAME=silent_error
 
 readonly __EXIT_FAILURE=1
 
-__print_info() {
-    # __print_info <message>
-    #
-    # Prints the given message to the standard ouput stream in cyan.
-    #
-    local message=${1:?the message must be specified}
-
-    if [[ -t 1 ]]; then
-        message="\033[0;33m$message\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "$message"
-}
-
-__print_success() {
-    # __print_success <message>
-    #
-    # Prints the given message to the standard ouput stream in green.
-    #
-    local message=${1:?the message must be specified}
-
-    if [[ -t 1 ]]; then
-        message="\033[0;32m$message\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "$message"
-}
-
 __print_error() {
     # __print_error <message>
     #
@@ -202,6 +174,104 @@ __be_kind() {
     shopt -u extdebug
     IFS="$__ORIG_IFS"
     trap '' ERR
+}
+
+__print_info() {
+    # __print_info <name> <value>
+    #
+    # Prints the given name and value to the standard ouput stream.
+    #
+    __be_strict
+
+    local name=${1:?the name must be specified}
+    local -r value=${2:?the value must be specified}
+
+    if [[ -t 1 ]]; then
+        name="\033[0;33m$name:\033[0m" # NOT_COVERED
+    else
+        name="$name:"
+    fi
+
+    echo -e "  $name $value"
+
+    __be_kind
+}
+
+__print_task() {
+    # __print_task <description>
+    #
+    # Prints a message to standard output showing that a task started.
+    #
+    __be_strict
+
+    local -r description=${1:?the description must be specified}
+    local character='>'
+
+    if [[ -t 1 ]]; then
+        character="\033[0;33m$character\033[0m" # NOT_COVERED
+    fi
+
+    echo -e "\n$character $description..."
+
+    __be_kind
+}
+
+__print_task_done() {
+    # __print_task_done
+    #
+    # Prints a message to standard output showing that the task finished.
+    #
+    __be_strict
+
+    local message="Done."
+
+    if [[ -t 1 ]]; then
+        message="\033[0;32m$message\033[0m" # NOT_COVERED
+    fi
+
+    echo -e "  $message"
+
+    __be_kind
+}
+
+__print_banner() {
+    # __print_banner
+    #
+    # Prints the banner.
+    #
+    __be_strict
+
+    local banner
+
+    __be_kind
+    read -r -d '' banner <<__BANNER__
+888                             d8b
+888                             Y8P
+888
+888888 888d888 8888b.  888  888 888 .d8888b
+888    888P"      "88b 888  888 888 88K
+888    888    .d888888 Y88  88P 888 "Y8888b.
+Y88b.  888    888  888  Y8bd8P  888      X88   888    888
+ "Y888 888    "Y888888   Y88P   888  88888P'   888    888
+                                               888    888
+                             88888b.  888  888 888888 88888b.   .d88b.  88888b.
+                             888 "88b 888  888 888    888 "88b d88""88b 888 "88b
+                             888  888 888  888 888    888  888 888  888 888  888
+                             888 d88P Y88b 888 Y88b.  888  888 Y88..88P 888  888
+                             88888P"   "Y88888  "Y888 888  888  "Y88P"  888  888
+                             888           888
+                             888      Y8b d88P
+                             888       "Y88P"
+__BANNER__
+    __be_strict
+
+    if [[ -t 1 ]]; then
+        banner="\033[0;34m$banner\033[0m" # NOT_COVERED
+    fi
+
+    echo -e "$banner"
+
+    __be_kind
 }
 
 __trim() {
@@ -434,16 +504,17 @@ __install_builder() {
     local -r installer="$clone_directory/plugins/python-build/install.sh"
     export PATH
 
-    __print_info "Installing latest python-build to $directory..."
+    __print_task "Installing python-build"
     __update_git_repo $repo_url $clone_directory
+    __print_info "requested location" "$directory"
+    __print_info "installed version" "$(__current_builder_version)"
 
     PREFIX=$directory $installer
 
     PATH="$directory/bin:$PATH"
     hash -r
 
-    __print_success "Installed python-build $(__current_builder_version)."
-
+    __print_task_done
     __be_kind
 }
 
@@ -549,13 +620,15 @@ __travis_python_setup() {
 
     : "${TRAVIS_OS_NAME:?must be set and not null}"
 
-    __print_info "travis-python $TRAVIS_PYTHON_VERSION"
+    __print_banner
+    __print_info "version" $TRAVIS_PYTHON_VERSION
 
     case $TRAVIS_OS_NAME in
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
+            __print_task "Installing Chocolatey $(choco --version)"
             __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
-            __print_success "Installed Chocolatey $(choco --version)."
+            __print_task_done
             ;;
         linux | osx)
             __install_builder "$TRAVIS_PYTHON_DIR/builder"
@@ -565,8 +638,6 @@ __travis_python_setup() {
             return $__EXIT_FAILURE
             ;;
     esac
-
-    __print_success "Python tools for Travis CI loaded."
 
     __be_kind
 }
@@ -605,7 +676,10 @@ install_python() {
         return $__EXIT_FAILURE
     fi
 
-    __print_info "Installing Python $version..."
+    __print_task "Installing Python"
+    __print_info "requested version" "$specifier"
+    __print_info "found version" "$version"
+    __print_info "requested location" "$location"
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __run_silent choco install python \
@@ -621,9 +695,11 @@ install_python() {
         PATH="$location/bin:$PATH"
     fi
 
+    __print_info "installed version" "$(__current_python_version)"
+
     hash -r
 
-    __print_success "Installed Python $(__current_python_version)."
+    __print_task_done
 
     __be_kind
 }

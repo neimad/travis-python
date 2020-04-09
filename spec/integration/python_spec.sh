@@ -29,12 +29,17 @@ Context "When on Travis CI"
                 binary_path=python
             fi
 
-            When call install_python "$directory/Python" "$PYTHON"
-            The line 1 of output should start with "Installing Python $PYTHON"
-            The line 2 of output should start with "Installed Python $PYTHON"
-            The line 3 of output should be blank
+            When call install_python "$directory/python" "$PYTHON"
+            The line 1 of output should be blank
+            The line 2 of output should equal "> Installing Python..."
+            The line 3 of output should equal "  requested version: $PYTHON"
+            The line 4 of output should match pattern "  found version: *"
+            The line 5 of output should equal "  requested location: $directory/python"
+            The line 6 of output should match pattern "  installed version: *"
+            The line 7 of output should equal "  Done."
+            The lines of output should equal 7
             The result of function "python_version" should start with "Python $PYTHON"
-            The result of function "python_location" should equal "$directory/Python/$binary_path"
+            The result of function "python_location" should equal "$directory/python/$binary_path"
         End
     End
 End

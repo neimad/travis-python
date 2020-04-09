@@ -27,9 +27,12 @@ Describe "__install_builder()"
         When call __install_builder "$directory"
         The command "__update_git_repo https://github.com/pyenv/pyenv /tmp/pyenv" should be called
         The command "/tmp/pyenv/plugins/python-build/install.sh" should be called
-        The line 1 of output should equal "Installing latest python-build to $directory..."
-        The line 2 of output should equal "Installed python-build 20200110."
-        The line 3 of output should be blank
+        The line 1 of output should be blank
+        The line 2 of output should equal "> Installing python-build..."
+        The line 3 of output should equal "  requested location: $directory"
+        The line 4 of output should equal "  installed version: 20200110"
+        The line 5 of output should equal "  Done."
+        The lines of output should equal 5
         The variable PATH should start with "$directory/bin:"
     End
 End
@@ -64,7 +67,7 @@ Describe "__available_python_versions_from_builder()"
         The line 6 of output should equal "3.8.1"
         The line 7 of output should equal "activepython-3.7.0"
         The line 8 of output should equal "anaconda-4.0.0"
-        The line 9 of output should be blank
+        The lines of output should equal 8
     End
 
     It "gives an empty output if no version are available"

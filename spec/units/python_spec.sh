@@ -122,12 +122,17 @@ Describe "install_python()"
 
 
             When call install_python "$directory" "3.7"
-            The line 1 of output should equal "Installing Python 3.7.2..."
             The command "python-build 3.7.2 $directory" should be called
             The command "pyenv" should not be called
-            The line 2 of output should equal "Installed Python 3.7.2."
+            The line 1 of output should be blank
+            The line 2 of output should equal "> Installing Python..."
+            The line 3 of output should equal "  requested version: 3.7"
+            The line 4 of output should equal "  found version: 3.7.2"
+            The line 5 of output should equal "  requested location: $directory"
+            The line 6 of output should equal "  installed version: 3.7.2"
+            The line 7 of output should equal "  Done."
+            The lines of output should equal 7
             The variable PATH should start with "$directory/bin:"
-            The line 3 of output should be blank
         End
     End
 
@@ -143,12 +148,17 @@ Describe "install_python()"
 
 
             When call install_python "$directory" "3.7"
-            The line 1 of output should equal "Installing Python 3.7.2..."
             The command "python-build 3.7.2 $directory" should be called
             The command "pyenv" should not be called
-            The line 2 of output should equal "Installed Python 3.7.2."
+            The line 1 of output should be blank
+            The line 2 of output should equal "> Installing Python..."
+            The line 3 of output should equal "  requested version: 3.7"
+            The line 4 of output should equal "  found version: 3.7.2"
+            The line 5 of output should equal "  requested location: $directory"
+            The line 6 of output should equal "  installed version: 3.7.2"
+            The line 7 of output should equal "  Done."
+            The lines of output should equal 7
             The variable PATH should start with "$directory/bin:"
-            The line 3 of output should be blank
         End
     End
 
@@ -162,11 +172,16 @@ Describe "install_python()"
             stub '__current_python_version' -o "3.7.2"
 
             When call install_python "$directory" "3.7"
-            The line 1 of output should equal "Installing Python 3.7.2..."
             The command "choco install python --version=3.7.2" should be called
-            The line 2 of output should equal "Installed Python 3.7.2."
+            The line 1 of output should be blank
+            The line 2 of output should equal "> Installing Python..."
+            The line 3 of output should equal "  requested version: 3.7"
+            The line 4 of output should equal "  found version: 3.7.2"
+            The line 5 of output should equal "  requested location: $directory"
+            The line 6 of output should equal "  installed version: 3.7.2"
+            The line 7 of output should equal "  Done."
+            The lines of output should equal 7
             The variable PATH should start with "$directory:$directory/Scripts"
-            The line 3 of output should be blank
         End
     End
 End

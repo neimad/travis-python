@@ -32,10 +32,11 @@ Describe "__travis_python_setup()"
         Before "TRAVIS_OS_NAME=linux"
 
         It "shows the tool version"
+            dummy '__print_banner'
             dummy '__install_builder'
 
             When call __travis_python_setup
-            The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
+            The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
@@ -51,10 +52,11 @@ Describe "__travis_python_setup()"
         Before "TRAVIS_OS_NAME=osx"
 
         It "shows the tool version"
+            dummy '__print_banner'
             dummy '__install_builder'
 
             When call __travis_python_setup
-            The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
+            The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
@@ -70,10 +72,11 @@ Describe "__travis_python_setup()"
         Before "TRAVIS_OS_NAME=windows"
 
         It "shows the tool version"
+            dummy '__print_banner'
             dummy 'choco'
 
             When call __travis_python_setup
-            The line 1 of output should equal "travis-python $TRAVIS_PYTHON_VERSION"
+            The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs Chocolatey 0.10.13"

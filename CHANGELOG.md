@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning].
 ### Added
  - Documentation about the TRAVIS_PYTHON_DIR variable.
 
+### Changed
+ - Increased verbosity.
+
 ## [1.0.0] - 2020-03-12
 ### Added
  - Travis CI build stages.
