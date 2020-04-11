@@ -505,8 +505,8 @@ __install_builder() {
     export PATH
 
     __print_task "Installing python-build"
-    __update_git_repo $repo_url $clone_directory
     __print_info "requested location" "$directory"
+    __update_git_repo $repo_url $clone_directory
     __print_info "installed version" "$(__current_builder_version)"
 
     PREFIX=$directory $installer
