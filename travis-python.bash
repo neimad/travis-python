@@ -626,7 +626,8 @@ __travis_python_setup() {
     case $TRAVIS_OS_NAME in
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
-            __print_task "Installing Chocolatey $(choco --version)"
+            __print_task "Downgrading Chocolatey"
+            __print_info "version" "$(choco --version)"
             __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
             __print_task_done
             ;;
