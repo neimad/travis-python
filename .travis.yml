@@ -5,6 +5,8 @@ stages:
   - coverage
   - integration
 
+osx_image: xcode11
+
 install:
   - curl -fsSL https://git.io/shellspec | sh -s -- -y master
   - PATH=$HOME/.local/bin:$PATH
@@ -27,7 +29,6 @@ jobs:
       env:
       addons:
         homebrew:
-          update: true
           packages:
             - kcov
       script: shellspec --no-banner --kcov --kcov-options "--coveralls-id=$TRAVIS_JOB_ID" spec/units
