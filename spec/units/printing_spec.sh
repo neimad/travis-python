@@ -34,21 +34,19 @@ Describe "__print_info()"
         The error should end with "the name must be specified"
     End
 
-    It "fails when the value is not specified"
-        When run __print_info "foo"
-        The status should be failure
-        The error should end with "the value must be specified"
-    End
-
-    It "fails when the value is empty"
-        When run __print_info "foo" ""
-        The status should be failure
-        The error should end with "the value must be specified"
-    End
-
     It "prints the given name and value to standard output"
         When call __print_info  "foo" "bar"
         The output should equal "  foo: bar"
+    End
+
+    It "shows when the value is unspecified"
+        When run __print_info "foo"
+        The output should equal "  foo: <null>"
+    End
+
+    It "shows when the value is empty"
+        When run __print_info "foo" ""
+        The output should equal "  foo: <null>"
     End
 End
 

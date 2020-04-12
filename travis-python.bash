@@ -184,7 +184,7 @@ __print_info() {
     __be_strict
 
     local name=${1:?the name must be specified}
-    local -r value=${2:?the value must be specified}
+    local -r value=${2:-<null>}
 
     if [[ -t 1 ]]; then
         name="\033[0;33m$name:\033[0m" # NOT_COVERED
