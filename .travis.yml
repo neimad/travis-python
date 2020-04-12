@@ -1,9 +1,9 @@
 language: shell
 
 stages:
-  - units
-  - coverage
-  - integration
+  - Units
+  - Coverage
+  - Integration
 
 osx_image: xcode11
 
@@ -14,7 +14,7 @@ install:
 jobs:
   include:
     - &units
-      stage: units
+      stage: Units
       os: linux
       env:
       before_script: shellspec --syntax-check
@@ -33,7 +33,7 @@ jobs:
             - kcov
       script: shellspec --no-banner --kcov --kcov-options "--coveralls-id=$TRAVIS_JOB_ID" spec/units
 
-stage: integration
+stage: Integration
 os:
   - linux
   - osx
