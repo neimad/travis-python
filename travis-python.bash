@@ -2,7 +2,7 @@
 # Copyright © 2020 Damien Flament
 # This file is part of travis-python.
 
-TRAVIS_PYTHON_VERSION="1.0.0"
+TRAVIS_PYTHON_VERSION="1.1.0"
 : "${TRAVIS_PYTHON_DIR:=$HOME/travis-python}"
 
 __TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME=silent_output
