@@ -41,9 +41,6 @@ __travis_python_error() {
     #
     local -r status=${1:-$?}
     local -r failing_command=$BASH_COMMAND
-
-    __be_strict
-
     local -r silent_output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
     local -r silent_error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
     local output
@@ -181,8 +178,6 @@ __print_info() {
     #
     # Prints the given name and value to the standard ouput stream.
     #
-    __be_strict
-
     local name=${1:?the name must be specified}
     local -r value=${2:-<null>}
 
@@ -193,8 +188,6 @@ __print_info() {
     fi
 
     echo -e "  $name $value"
-
-    __be_kind
 }
 
 __print_task() {
@@ -202,8 +195,6 @@ __print_task() {
     #
     # Prints a message to standard output showing that a task started.
     #
-    __be_strict
-
     local -r description=${1:?the description must be specified}
     local character='>'
 
@@ -212,8 +203,6 @@ __print_task() {
     fi
 
     echo -e "\n$character $description..."
-
-    __be_kind
 }
 
 __print_task_done() {
@@ -221,8 +210,6 @@ __print_task_done() {
     #
     # Prints a message to standard output showing that the task finished.
     #
-    __be_strict
-
     local message="Done."
 
     if [[ -t 1 ]]; then
@@ -230,8 +217,6 @@ __print_task_done() {
     fi
 
     echo -e "  $message"
-
-    __be_kind
 }
 
 __print_banner() {
@@ -239,12 +224,10 @@ __print_banner() {
     #
     # Prints the banner.
     #
-    __be_strict
-
     local banner
 
-    __be_kind
-    read -r -d '' banner <<__BANNER__
+    # shellcheck disable=SC2251
+    ! read -r -d '' banner <<__BANNER__
 888                             d8b
 888                             Y8P
 888
@@ -263,15 +246,12 @@ Y88b.  888    888  888  Y8bd8P  888      X88   888    888
                              888      Y8b d88P
                              888       "Y88P"
 __BANNER__
-    __be_strict
 
     if [[ -t 1 ]]; then
         banner="\033[0;34m$banner\033[0m" # NOT_COVERED
     fi
 
     echo -e "$banner"
-
-    __be_kind
 }
 
 __trim() {
@@ -279,8 +259,6 @@ __trim() {
     #
     # Trims leading and trailing whitespace characters from given string.
     #
-    __be_strict
-
     local string=${1?the string must be specified}
 
     shopt -s extglob
@@ -288,8 +266,6 @@ __trim() {
     string=${string%%+([[:space:]])}
 
     echo "$string"
-
-    __be_kind
 }
 
 __init_file() {
@@ -300,14 +276,10 @@ __init_file() {
     # All parent directories are created if needed. If the file already exists,
     # it is overwritten.
     #
-    __be_strict
-
     local -r path=${1:?the path must be specified}
 
     mkdir -p "$(dirname "$path")"
     : >|"$path"
-
-    __be_kind
 }
 
 __run_silent() {
@@ -319,8 +291,6 @@ __run_silent() {
     # and stderr). If the command exists with a status code other than 0, its
     # output will be available to the `__travis_python_error` handler.
     #
-    __be_strict
-
     : "${1:?the command must be specified}"
     local -r output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
     local -r error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
@@ -332,18 +302,14 @@ __run_silent() {
     __init_file "$error_file"
 
     # Then the stdout and stderr streams are redirected to them.
-    set +e
     "$@" >"$output_file" 2>"$error_file"
     status=$?
-    set -e
 
     # If the command succeed, the files are removed.
     if ((status == 0)); then
         rm -f "$output_file"
         rm -f "$error_file"
     fi
-
-    __be_kind
 
     return $status
 }
@@ -353,8 +319,6 @@ __windows_path() {
     #
     # Converts a Unix path to Windows flavor.
     #
-    __be_strict
-
     local -r path=${1:?the path must be specified}
     local converted
     local drive_letter
@@ -378,8 +342,6 @@ __windows_path() {
     fi
 
     echo "$converted"
-
-    __be_kind
 }
 
 __latest_matching_version() {
@@ -393,8 +355,6 @@ __latest_matching_version() {
     #
     # Only stable versions are considered.
     #
-    __be_strict
-
     local -r specifier=${1:?the specifier must be specified}
     local -r specifier_pattern=${specifier//./"\."}
     shift
@@ -419,8 +379,6 @@ __latest_matching_version() {
     done
 
     echo "$found_version"
-
-    __be_kind
 }
 
 __latest_git_tag() {
@@ -429,13 +387,9 @@ __latest_git_tag() {
     # Gives the latest tag from the Git repository located at the specified
     # directory.
     #
-    __be_strict
-
     local -r directory=${1:?the directory must be specified}
 
     git -C "$directory" describe --abbrev=0 --tags
-
-    __be_kind
 }
 
 __update_git_repo() {
@@ -448,8 +402,6 @@ __update_git_repo() {
     # Otherwise, it is only fetched.
     # Then, the latest tag is checked out.
     #
-    __be_strict
-
     local -r url=${1:?the URL must be specified}
     local -r directory=${2:?the directory must be specified}
     local latest_tag
@@ -462,8 +414,6 @@ __update_git_repo() {
 
     latest_tag=$(__latest_git_tag "$directory")
     __run_silent git -C "$directory" checkout "$latest_tag" --detach
-
-    __be_kind
 }
 
 __current_builder_version() {
@@ -471,8 +421,6 @@ __current_builder_version() {
     #
     # Gives the current version of python-build.
     #
-    __be_strict
-
     local version
 
     version=$(python-build --version)
@@ -480,8 +428,6 @@ __current_builder_version() {
     version=$(__trim "$version")
 
     echo "$version"
-
-    __be_kind
 }
 
 __install_builder() {
@@ -496,8 +442,6 @@ __install_builder() {
     # The `PATH` is updated to include the `bin` directory and the shell
     # commands hash table is reset.
     #
-    __be_strict
-
     local directory=${1:?the installation directory must be specified}
     local -r repo_url="https://github.com/pyenv/pyenv"
     local -r clone_directory="/tmp/pyenv"
@@ -515,7 +459,6 @@ __install_builder() {
     hash -r
 
     __print_task_done
-    __be_kind
 }
 
 __available_python_versions_from_builder() {
@@ -523,8 +466,6 @@ __available_python_versions_from_builder() {
     #
     # Gives the list of Python versions available from python-build.
     #
-    __be_strict
-
     local versions
     local versions=()
     local IFS
@@ -541,8 +482,6 @@ __available_python_versions_from_builder() {
         IFS=$'\n'
         echo "${versions[*]}"
     fi
-
-    __be_kind
 }
 
 __available_python_versions_from_chocolatey() {
@@ -550,8 +489,6 @@ __available_python_versions_from_chocolatey() {
     #
     # Gives the list of Python versions available from Chocolatey.
     #
-    __be_strict
-
     local output
     local version
     local versions=()
@@ -572,8 +509,6 @@ __available_python_versions_from_chocolatey() {
         IFS=$'\n'
         echo "${versions[*]}"
     fi
-
-    __be_kind
 }
 
 __available_python_versions() {
@@ -581,15 +516,11 @@ __available_python_versions() {
     #
     # Gives the list of Python versions available on the current platform.
     #
-    __be_strict
-
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __available_python_versions_from_chocolatey
     else
         __available_python_versions_from_builder
     fi
-
-    __be_kind
 }
 
 __current_python_version() {
@@ -597,8 +528,6 @@ __current_python_version() {
     #
     # Gives the current version of Python.
     #
-    __be_strict
-
     local version
 
     version=$(python --version 2>&1)
@@ -606,8 +535,6 @@ __current_python_version() {
     version=$(__trim "$version")
 
     echo "$version"
-
-    __be_kind
 }
 
 __travis_python_setup() {
@@ -639,7 +566,6 @@ __travis_python_setup() {
             return $__EXIT_FAILURE
             ;;
     esac
-
     __be_kind
 }
 

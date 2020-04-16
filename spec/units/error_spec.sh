@@ -20,7 +20,7 @@ Describe "__travis_python_error()"
 
     It "prints standard output of the silenced command"
         stub foo -o "output" -s 1
-        __run_silent foo
+        ! __run_silent foo
 
         When call __travis_python_error
         The status should be success
@@ -32,7 +32,7 @@ Describe "__travis_python_error()"
 
     It "prints standard error of the silenced command"
         stub foo -e "error" -s 1
-        __run_silent foo
+        ! __run_silent foo
 
         When call __travis_python_error
         The status should be success

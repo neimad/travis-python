@@ -13,6 +13,9 @@ and this project adheres to [Semantic Versioning].
 ### Changed
  - Increased verbosity.
 
+### Fixed
+ - Bash strict mode application (more bugs may be raised).
+
 ## [1.0.0] - 2020-03-12
 ### Added
  - Travis CI build stages.
