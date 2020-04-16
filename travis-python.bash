@@ -537,8 +537,8 @@ __current_python_version() {
     echo "$version"
 }
 
-__travis_python_setup() {
-    # __travis_python_setup
+setup_travis_python() {
+    # setup_travis_python
     #
     # Setups Python tools for Travis CI for installation within specified
     # directory.
@@ -633,4 +633,4 @@ install_python() {
 
 ${__SOURCED__:+'return'} # Prevent execution while testing
 
-__travis_python_setup # NOT_COVERABLE because of previous line
+setup_travis_python # NOT_COVERABLE because of previous line

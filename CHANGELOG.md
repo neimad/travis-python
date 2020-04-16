@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning].
 
 ### Changed
  - Increased verbosity.
+ - Made setup function part of API.
 
 ### Fixed
  - Bash strict mode application (more bugs may be raised).

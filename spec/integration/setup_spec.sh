@@ -5,7 +5,7 @@ Include ./travis-python.bash
 Context "When on Travis CI"
     Skip if "not on Travis CI" test "${TRAVIS:-}" != 'true'
 
-    Describe "__travis_python_setup()"
+    Describe "setup_travis_python()"
         # Workaround for bug https://github.com/shellspec/shellspec/issues/30
         python_build_version() {
             python-build --version
@@ -21,7 +21,7 @@ Context "When on Travis CI"
             It "installs python-build"
                 dummy __print_banner
 
-                When call __travis_python_setup
+                When call setup_travis_python
                 The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
                 The line 2 of output should be blank
                 The line 3 of output should equal "> Installing python-build..."

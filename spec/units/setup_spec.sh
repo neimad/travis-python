@@ -2,11 +2,11 @@
 
 Include ./travis-python.bash
 
-Describe "__travis_python_setup()"
+Describe "setup_travis_python()"
     It "needs the TRAVIS_OS_NAME environment variable to be set"
         unset TRAVIS_OS_NAME
 
-        When run __travis_python_setup
+        When run setup_travis_python
         The status should be failure
         The error should end with "TRAVIS_OS_NAME: must be set and not null"
     End
@@ -14,7 +14,7 @@ Describe "__travis_python_setup()"
     It "needs the TRAVIS_OS_NAME environment variable to be not null"
         TRAVIS_OS_NAME=
 
-        When run __travis_python_setup
+        When run setup_travis_python
         The status should be failure
         The error should end with "TRAVIS_OS_NAME: must be set and not null"
     End
@@ -22,7 +22,7 @@ Describe "__travis_python_setup()"
     It "fails when the platform is not supported"
         export TRAVIS_OS_NAME=bar
 
-        When call __travis_python_setup
+        When call setup_travis_python
         The status should be failure
         The error should include "The 'bar' platform is not supported"
         The output should not be blank
@@ -35,14 +35,14 @@ Describe "__travis_python_setup()"
             dummy '__print_banner'
             dummy '__install_builder'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
             spy '__install_builder'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The command "__install_builder $TRAVIS_PYTHON_DIR/builder" should be called
             The output should not be blank
         End
@@ -55,14 +55,14 @@ Describe "__travis_python_setup()"
             dummy '__print_banner'
             dummy '__install_builder'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs python-build"
             spy '__install_builder'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The command "__install_builder $TRAVIS_PYTHON_DIR/builder" should be called
             The output should not be blank
         End
@@ -75,14 +75,14 @@ Describe "__travis_python_setup()"
             dummy '__print_banner'
             dummy 'choco'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
         End
 
         It "installs Chocolatey 0.10.13"
             spy 'choco'
 
-            When call __travis_python_setup
+            When call setup_travis_python
             The command "choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade" should be called
             The output should not be blank
         End

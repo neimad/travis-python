@@ -22,7 +22,7 @@ Context "When on Travis CI"
         }
 
         It "installs Python ${PYTHON:-$'\b'} to specified directory"
-            __travis_python_setup
+            setup_travis_python
 
             binary_path=bin/python
             if [[ ${TRAVIS_OS_NAME:-} == 'windows' ]]; then
