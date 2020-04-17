@@ -25,6 +25,6 @@
 language: shell
 
 before_install:
-  - wget https://raw.githubusercontent.com/neimad/travis-python/1.0.0/travis-python.bash
+  - wget https://raw.githubusercontent.com/neimad/travis-python/1.1.0/travis-python.bash
   - source travis-python.bash
   - install_python $HOME/python $PYTHON
