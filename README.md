@@ -1,6 +1,6 @@
 travis-python
 =============
-Helps to install Python to Travis CI machines in Linux, macOS and Windows.
+Helps to install Python to Travis CI machines on Linux, macOS and Windows.
 
 ![Supported Python versions][python-versions-badge]
 ![Supported Operating Systems][os-badge]
@@ -8,21 +8,14 @@ Helps to install Python to Travis CI machines in Linux, macOS and Windows.
 [![Coverage Status][cov-badge]][coverage]
 [![License][license-badge]][license]
 
-_travis-python_ aims to provide a simple way to install a Python distribution
-on the Travis CI machines, available on the three operating systems available.
-
-You need source the provided Bash script and call the [install_python()]
-function.
-
-Or just use the shared configuration snippet as stated below.
-
 Usage
 -----
 
-To be able to use _travis-python_, the Travis machine needs to be configured
-to be able to run in the three operating systems.
+You need to source the provided Bash script and call the [install_python()]
+function.
 
-The easiest way to do it is to [import the shared configuration snippet]:
+Or just use the shared configuration snippet. The easiest way to do it is to
+[import the shared configuration snippet]:
 
 ```yaml
 import:
@@ -30,27 +23,43 @@ import:
     mode: deep_merge_prepend
 ```
 
-**The imported configuration needs to be prepended** and **a deep merge is
-required** to be able to use the installed Python distribution in the
-`before_install` and subsequent phases.
+> :warning: **The imported configuration needs to be prepended** and **a deep merge is
+> required** to be able to use the installed Python distribution in the
+> `before_install` and subsequent phases.
 
 Read [the configuration documentation] to understand how it works.
 
-Then, specify the wanted Python version using the `PYTHON` environment
+Then, specify the operating systems as usual:
+
+```yaml
+import:
+  - source: neimad/travis-python:stable.yml
+    mode: deep_merge_prepend
+
+os:
+  - linux
+  - osx
+  - windows
+```
+
+Finally, specify the wanted Python version using the `PYTHON` environment
 variable:
 
 ```yaml
 import:
-  - source: neimad/travis-python:dev.yml
+  - source: neimad/travis-python:stable.yml
     mode: deep_merge_prepend
+
+os:
+  - linux
+  - osx
+  - windows
 
 env:
   - PYTHON=3.8
   - PYTHON=3.7
   - PYTHON=2
 ```
-By default, it will generate a build matrix using the three operating systems
-available on Travis CI (Linux, macOS and Windows).
 
 The Python distribution is installed during the `before_install` phase and
 available using the `python` program name (whether it is Python 2 or 3).
@@ -81,28 +90,14 @@ To solve those problems, some directions have been taken:
    operating systems available on Travis CI,
  - use a Bash 3.2 compatible script because it is the one available on macOS.
 
-Running tests
--------------
-
-Use [Shellspec] to run unit tests:
-
-```console
-shellspec
-```
-
 Development
 -----------
 
 The following dependencies are required:
   - [ShellCheck] to lint shell scripts,
   - [Shellspec] to run units tests,
-  - [Bash] to run the script.
-
-Install the pre-commit hook within your repository:
-
-```console
-poetry run pre-commit install
-```
+  - [Bash] to run the script,
+  - [Pre-commit] to check the changes before committing.
 
 Contributing
 ------------
@@ -125,7 +120,7 @@ License
 
 [python-versions-badge]: https://img.shields.io/badge/python-2.7%20|%203.6%20|%203.7%20|%203.8-blue?style=flat-square
 [os-badge]: https://img.shields.io/badge/OS-Linux%20|%20macOS%20|%20Windows-blueviolet?style=flat-square
-[ci-badge]: https://img.shields.io/travis/neimad/travis-python?style=flat-square
+[ci-badge]: https://img.shields.io/travis/neimad/travis-python/master?style=flat-square
 [cov-badge]: https://img.shields.io/coveralls/github/neimad/travis-python?style=flat-square
 [license-badge]: https://img.shields.io/github/license/neimad/travis-python?style=flat-square
 
@@ -144,3 +139,4 @@ License
 [Shellspec]: https://shellspec.info/
 [ShellCheck]: https://www.shellcheck.net/
 [Bash]: https://www.gnu.org/software/bash/
+[Pre-commit]: https://pre-commit.com/
