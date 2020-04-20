@@ -48,3 +48,7 @@ script: shellspec --no-banner spec/integration
 after_failure:
   - source ./travis-python.bash
   - install_python $HOME/python $PYTHON
+
+notifications:
+  email:
+    if: branch = master
