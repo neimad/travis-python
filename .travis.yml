@@ -19,6 +19,7 @@ jobs:
       env:
       before_script: shellspec --syntax-check
       script: shellspec --no-banner spec/units
+      after_failure:
     - <<: *units
       os: osx
     - <<: *units
@@ -44,3 +45,6 @@ env:
   - PYTHON=3.6
   - PYTHON=2.7
 script: shellspec --no-banner spec/integration
+after_failure:
+  - source ./travis-python.bash
+  - install_python $HOME/python $PYTHON
