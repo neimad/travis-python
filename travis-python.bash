@@ -255,17 +255,53 @@ __BANNER__
 }
 
 __trim() {
-    # __trim <string>
+    # __trim
     #
-    # Trims leading and trailing whitespace characters from given string.
+    # Trims leading and trailing whitespace characters from each line of stdin
+    # and output it to stdout.
     #
-    local string=${1?the string must be specified}
+    # Lines which are blank after trimming are not send to output.
+    #
+    local line
 
-    shopt -s extglob
-    string=${string##+([[:space:]])}
-    string=${string%%+([[:space:]])}
+    while read -r -t 1 line; do
+        shopt -s extglob
 
-    echo "$string"
+        line=${line##+([[:space:]])}
+        line=${line%%+([[:space:]])}
+
+        if ((${#line} > 0)); then
+            printf '%s\n' "$line"
+        fi
+    done
+}
+
+__strip_prefix() {
+    # __strip_prefix <prefix>
+    #
+    # Removes the specified prefix from each line of stdin and output it to
+    # stdout.
+    #
+    # Lines which are blank after stripping are not send to output.
+    #
+    if [[ -z ${1:-} ]]; then
+        __print_error "the prefix must be specified"
+        return $__EXIT_FAILURE
+    fi
+
+    readonly prefix=$1
+    local line
+
+    while read -r -t 1 line; do
+        if [[ ${line:0:${#prefix}} == "$prefix" ]]; then
+            line=${line:${#prefix}}
+        fi
+
+        if ((${#line} > 0)); then
+            printf '%s\n' "$line"
+        fi
+    done
+
 }
 
 __init_file() {
@@ -421,13 +457,7 @@ __current_builder_version() {
     #
     # Gives the current version of python-build.
     #
-    local version
-
-    version=$(python-build --version)
-    version="${version#'python-build'}"
-    version=$(__trim "$version")
-
-    echo "$version"
+    python-build --version | __strip_prefix "python-build" | __trim
 }
 
 __install_builder() {
@@ -466,22 +496,7 @@ __available_python_versions_from_builder() {
     #
     # Gives the list of Python versions available from python-build.
     #
-    local versions
-    local versions=()
-    local IFS
-
-    while IFS='' read -r version; do
-        version=$(__trim "$version")
-
-        if [[ -n $version ]]; then
-            versions+=("$version")
-        fi
-    done < <(python-build --definitions) # NOT_COVERABLE
-
-    if ((${#versions[@]} > 0)); then
-        IFS=$'\n'
-        echo "${versions[*]}"
-    fi
+    python-build --definitions | __trim
 }
 
 __available_python_versions_from_chocolatey() {
@@ -489,26 +504,7 @@ __available_python_versions_from_chocolatey() {
     #
     # Gives the list of Python versions available from Chocolatey.
     #
-    local output
-    local version
-    local versions=()
-    local IFS
-
-    output=$(choco list python --exact --all-versions --limit-output)
-
-    while IFS='' read -r version; do
-        version=$(__trim "$version")
-        version="${version#'python|'}"
-
-        if [[ -n $version ]]; then
-            versions+=("$version")
-        fi
-    done <<<"$output"
-
-    if ((${#versions[@]} > 0)); then
-        IFS=$'\n'
-        echo "${versions[*]}"
-    fi
+    choco list python --exact --all-versions --limit-output | __trim | __strip_prefix "python|"
 }
 
 __available_python_versions() {
@@ -528,13 +524,7 @@ __current_python_version() {
     #
     # Gives the current version of Python.
     #
-    local version
-
-    version=$(python --version 2>&1)
-    version="${version#'Python'}"
-    version=$(__trim "$version")
-
-    echo "$version"
+    python --version 2>&1 | __strip_prefix "Python" | __trim
 }
 
 setup_travis_python() {
