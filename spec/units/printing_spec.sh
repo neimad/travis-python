@@ -87,7 +87,7 @@ Describe "__print_error()"
         The error should end with "the message must be specified"
     End
 
-    It "fails when the message is empty"
+    It "fails when the message is blank"
         When run __print_error ""
         The status should be failure
         The error should end with "the message must be specified"
@@ -106,7 +106,7 @@ Describe "__print_info()"
         The error should end with "the name must be specified"
     End
 
-    It "fails when the name is empty"
+    It "fails when the name is blank"
         When run __print_info ""
         The status should be failure
         The error should end with "the name must be specified"
@@ -122,7 +122,7 @@ Describe "__print_info()"
         The output should equal "  foo: <null>"
     End
 
-    It "shows when the value is empty"
+    It "shows when the value is blank"
         When call __print_info "foo" ""
         The output should equal "  foo: <null>"
     End
@@ -135,7 +135,7 @@ Describe "__print_task()"
         The error should end with "the description must be specified"
     End
 
-    It "fails when the task description is empty"
+    It "fails when the task description is blank"
         When run __print_task ""
         The status should be failure
         The error should end with "the description must be specified"

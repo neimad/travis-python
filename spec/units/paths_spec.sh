@@ -9,7 +9,7 @@ Describe "__windows_path()"
         The error should end with "the path must be specified"
     End
 
-    It "fails when the path is empty"
+    It "fails when the path is blank"
         When run __windows_path ""
         The status should be failure
         The error should end with "the path must be specified"

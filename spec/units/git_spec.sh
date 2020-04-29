@@ -9,7 +9,7 @@ Describe "__latest_git_tag()"
         The error should end with "the directory must be specified"
     End
 
-    It "fails when the directory name is empty string"
+    It "fails when the directory name is blank string"
         When run __latest_git_tag ""
         The status should be failure
         The error should end with "the directory must be specified"
@@ -30,7 +30,7 @@ Describe "__update_git_repo()"
         The error should end with "the URL must be specified"
     End
 
-    It "fails when the URL is empty"
+    It "fails when the URL is blank"
         When run __update_git_repo ""
         The status should be failure
         The error should end with "the URL must be specified"
@@ -42,7 +42,7 @@ Describe "__update_git_repo()"
         The error should end with "the directory must be specified"
     End
 
-    It "fails when the directory name is empty string"
+    It "fails when the directory name is blank string"
         When run __update_git_repo "https://foo" ""
         The status should be failure
         The error should end with "the directory must be specified"

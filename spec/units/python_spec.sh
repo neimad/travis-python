@@ -71,7 +71,7 @@ Describe "install_python()"
         The error should end with "the installation directory must be specified"
     End
 
-    It "fails when the directory name is empty"
+    It "fails when the directory name is blank"
         When run install_python ""
         The status should be failure
         The error should end with "the installation directory must be specified"
@@ -83,7 +83,7 @@ Describe "install_python()"
         The error should end with "the specifier must be specified"
     End
 
-    It "fails when the specifier is empty"
+    It "fails when the specifier is blank"
         When run install_python "foo" ""
         The status should be failure
         The error should end with "the specifier must be specified"

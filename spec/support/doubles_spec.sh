@@ -24,7 +24,7 @@ Describe "spy()"
         The error should end with "the program must be specified"
     End
 
-    It "fails when the program name is empty"
+    It "fails when the program name is blank"
         When run spy ""
         The status should be failure
         The error should end with "the program must be specified"
@@ -61,7 +61,7 @@ Describe "spy_check()"
         The error should end with "the command line must be specified"
     End
 
-    It "fails when the command line is empty"
+    It "fails when the command line is blank"
         When run spy_check ""
         The status should be failure
         The error should end with "the command line must be specified"
@@ -99,7 +99,7 @@ Spy Report
 foo bar"
     End
 
-    It "shows an empty report if not any program have been spied"
+    It "shows a blank report if not any program have been spied"
         When call spy_dump
         The output should equal "
 Spy Report
@@ -141,7 +141,7 @@ Describe "dummy()"
         The error should end with "the program must be specified"
     End
 
-    It "fails when the program is empty"
+    It "fails when the program is blank"
         When run dummy ""
         The status should be failure
         The error should end with "the program must be specified"
@@ -170,7 +170,7 @@ Describe "stub()"
         The error should end with "the program must be specified"
     End
 
-    It "fails when the program is empty"
+    It "fails when the program is blank"
         When run stub ""
         The status should be failure
         The error should end with "the program must be specified"

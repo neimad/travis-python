@@ -33,7 +33,7 @@ Describe "__available_python_versions_from_chocolatey()"
         The line 8 of output should be blank
     End
 
-    It "gives an empty output if no version are available"
+    It "gives a blank output if no version are available"
         stub 'choco' -o ""
 
         When call __available_python_versions_from_chocolatey

@@ -9,7 +9,7 @@ Describe "__run_silent()"
         The error should end with "the command must be specified"
     End
 
-    It "fails when the command is empty"
+    It "fails when the command is blank"
         When run __run_silent "" ""
         The status should be failure
         The error should end with "the command must be specified"

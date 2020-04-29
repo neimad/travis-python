@@ -9,7 +9,7 @@ Describe "__install_builder()"
         The error should end with "the installation directory must be specified"
     End
 
-    It "fails when the directory is empty"
+    It "fails when the directory is blank"
         When run __install_builder
         The status should be failure
         The error should end with "the installation directory must be specified"
@@ -70,7 +70,7 @@ Describe "__available_python_versions_from_builder()"
         The lines of output should equal 8
     End
 
-    It "gives an empty output if no version are available"
+    It "gives a blank output if no version are available"
         stub 'python-build' -o ""
 
         When call __available_python_versions_from_builder
