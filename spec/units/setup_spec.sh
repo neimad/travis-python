@@ -40,6 +40,7 @@ Describe "setup_travis_python()"
         End
 
         It "installs python-build"
+            dummy '__print_banner'
             spy '__install_builder'
 
             When call setup_travis_python

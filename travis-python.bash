@@ -9,76 +9,87 @@ __TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME=silent_output
 __TRAVIS_PYTHON_SILENT_ERROR_FILENAME=silent_error
 
 readonly __EXIT_FAILURE=1
-
-__print_error() {
-    # __print_error <message>
-    #
-    # Prints the given error message to the standard error stream in red.
-    #
-    local message=${1:?the message must be specified}
-
-    if [[ -t 1 ]]; then
-        message="\033[0;31m$message\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "$message" >&2
-}
+readonly __EXIT_SUCCESS=0
+readonly __READ_TIMEOUT=${TRAVIS_PYTHON_READ_TIMEOUT:-1}
 
 __travis_python_error() {
-    # __travis_python_error [status]
+    # __travis_python_error [-c <command>] [-s <status>]
     #
     # Handles error encountered while running the last command. Many data
     # usefull for debugging are printed to stderr:
     #  - the last command executed,
     #  - its exit status code,
-    #  - its output (if it has been silenced usin `__run_silent`),
+    #  - its output (if it has been silenced using `__run_silent`),
     #  - the stack trace,
     #  - informations about the execution environment.
     #
     # If the command has been silenced, its output is printed.
     #
-    # The status code of the command might be specified.
+    # The the command and its status code might be specified.
     #
-    local -r status=${1:-$?}
-    local -r failing_command=$BASH_COMMAND
+    local OPT
+    local OPTIND
+    local status=$?
+    local failing_command=$BASH_COMMAND
     local -r silent_output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
     local -r silent_error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
-    local output
-    local error
     local -i i
     local -i args_i
     local -i args_left
     local arguments
     local command_line
 
-    __print_error $'\nCommand failed\n--------------'
-    __print_error "\`$failing_command\` exited with status $status."
+    while getopts 'c:s:' OPT; do
+        case $OPT in
+            c)
+                failing_command=$OPTARG
+                ;;
+            s)
+                status=$OPTARG
+                ;;
+            *) return $__EXIT_FAILURE ;;
+        esac
+    done
+
+    local -r status
+    local -r failing_command
+
+    __stderr <<__ERROR__
+
+Command failed
+==============
+$failing_command
+    exited with status $status.
+__ERROR__
 
     # Print output of silenced command.
     if [[ -s $silent_output_file ]]; then
-        output=$(<"$silent_output_file")
+        __stderr <<__OUTPUT__
 
-        if [[ -n $output ]]; then
-            __print_error $'\nCommand standard output\n-----------------------'
-            __print_error "$output"
-        fi
+Command standard output
+-----------------------
+$(<"$silent_output_file")
+__OUTPUT__
     fi
 
     if [[ -s $silent_error_file ]]; then
-        error=$(<"$silent_error_file")
+        __stderr <<__ERROR__
 
-        if [[ -n $error ]]; then
-            __print_error $'\nCommand standard error\n----------------------'
-            __print_error "$error"
-        fi
+Command standard error
+----------------------
+$(<"$silent_error_file")
+__ERROR__
     fi
 
     # Print the stack trace
-    i=0
+    if ((${#BASH_LINENO[@]} > 0)); then
+        __stderr <<__TITLE__
 
-    if ((i < ${#BASH_LINENO[@]})); then
-        __print_error $'\nStack trace\n-----------'
+Stack trace
+-----------
+__TITLE__
 
+        i=0
         args_i=$# # skip arguments passed to this handler function
 
         while ((i < ${#BASH_LINENO[@]})); do
@@ -103,23 +114,34 @@ __travis_python_error() {
                 fi
             fi
 
-            __print_error "[$i] $command_line"
-            __print_error "  in ${BASH_SOURCE[i]:-<unknown file>} at line ${BASH_LINENO[i]}"
+            __stderr <<__LINE__
+[$i] $command_line
+  in ${BASH_SOURCE[i]:-<unknown file>} at line ${BASH_LINENO[i]}
+__LINE__
 
             ((i += 1))
         done
     fi
 
     # Print information about the environment
-    __print_error $'\nEnvironment\n-----------'
-    __print_error "Bash $BASH_VERSION"
-    __print_error "  invoked as $BASH"
-    __print_error "  in process $$"
-    __print_error "  with shell options:"
-    __print_error "    - ${SHELLOPTS//:/$'\n    - '}"
-    __print_error "Working in directory $PWD."
-    __print_error "Using PATH:"
-    __print_error "  - ${PATH//:/$'\n  - '}"
+    local -r shell_options="${SHELLOPTS//:/$'\n    - '}"
+    local -r command_paths="${PATH//:/$'\n  - '}"
+
+    __stderr <<__ENVIRONMENT__
+
+Environment
+-----------
+Bash $BASH_VERSION
+  invoked as $BASH
+  in process $$
+  with shell options:
+    - $shell_options
+
+Working in directory $PWD.
+
+Using PATH:
+  - $command_paths
+__ENVIRONMENT__
 }
 
 __be_strict() {
@@ -154,7 +176,7 @@ __be_strict() {
     shopt -s extdebug
     __ORIG_IFS="${IFS:-}"
     IFS=$'\n\t'
-    trap '__travis_python_error' ERR
+    trap '__travis_python_error -s "$?" -c "$BASH_COMMAND"' ERR
 }
 
 __be_kind() {
@@ -173,21 +195,97 @@ __be_kind() {
     trap '' ERR
 }
 
+__stderr() {
+    # __stderr
+    #
+    # Redirects the standard input to standard output while coloring it in red.
+    #
+    __colorize "red" >&2
+}
+
+__puts() {
+    # __puts <string>
+    #
+    # Sends the given string to standard output.
+    #
+    printf "%s" "${1-}"
+}
+
+__putsn() {
+    # __putsn <string>
+    #
+    # Sends the given string to standard output, followed by a newline.
+    #
+    printf "%s\n" "${1-}"
+}
+
+__colorize() {
+    # __colorize <color>
+    #
+    # Apply the specified foreground color to the received input and send it to
+    # standard output.
+    #
+    local -r CSI=$'\e['
+    local -r reset="${CSI}m"
+    # shellcheck disable=SC2034
+    local -r \
+        code_black=30 \
+        code_red=31 \
+        code_green=32 \
+        code_yellow=33 \
+        code_blue=34 \
+        code_magenta=35 \
+        code_cyan=36 \
+        code_white=37
+    local -r color=${1:?the color must be specified}
+    local -r code_name=code_${color}
+    local -r code=${!code_name:?the color \'$color\' is unknown}
+    local line
+
+    if [[ -t 1 ]]; then
+        # NOT_COVERED_START
+        __puts "$reset"
+        __puts "${CSI}${code}m"
+        # NOT_COVERED_STOP
+    fi
+
+    # Print each line of input
+    while IFS= read -r -t "$__READ_TIMEOUT" line; do
+        __putsn "$line"
+    done
+
+    # If the last line isn't terminated by a newline character, print it now.
+    if ((${#line} > 0)); then
+        __puts "$line"
+    fi
+
+    if [[ -t 1 ]]; then
+        # NOT_COVERED_START
+        __puts "$reset"
+        # NOT_COVERED_STOP
+    fi
+}
+
+__print_error() {
+    # __print_error <message>
+    #
+    # Prints the given error message to the standard error stream in red.
+    #
+    local -r message=${1:?the message must be specified}
+
+    __putsn "$message" | __colorize "red" >&2
+}
+
 __print_info() {
     # __print_info <name> <value>
     #
     # Prints the given name and value to the standard ouput stream.
     #
-    local name=${1:?the name must be specified}
+    local -r name=${1:?the name must be specified}
     local -r value=${2:-<null>}
 
-    if [[ -t 1 ]]; then
-        name="\033[0;33m$name:\033[0m" # NOT_COVERED
-    else
-        name="$name:"
-    fi
-
-    echo -e "  $name $value"
+    __puts "  $name:" | __colorize "yellow"
+    __putsn " $value"
 }
 
 __print_task() {
@@ -196,13 +294,10 @@ __print_task() {
     # Prints a message to standard output showing that a task started.
     #
     local -r description=${1:?the description must be specified}
-    local character='>'
 
-    if [[ -t 1 ]]; then
-        character="\033[0;33m$character\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "\n$character $description..."
+    __putsn
+    __puts ">" | __colorize "yellow"
+    __putsn " $description..."
 }
 
 __print_task_done() {
@@ -210,13 +305,7 @@ __print_task_done() {
     #
     # Prints a message to standard output showing that the task finished.
     #
-    local message="Done."
-
-    if [[ -t 1 ]]; then
-        message="\033[0;32m$message\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "  $message"
+    __putsn "  Done." | __colorize "green"
 }
 
 __print_banner() {
@@ -224,10 +313,7 @@ __print_banner() {
     #
     # Prints the banner.
     #
-    local banner
-
-    # shellcheck disable=SC2251
-    ! read -r -d '' banner <<__BANNER__
+    __colorize "blue" <<__BANNER__
 888                             d8b
 888                             Y8P
 888
@@ -246,12 +332,6 @@ Y88b.  888    888  888  Y8bd8P  888      X88   888    888
                              888      Y8b d88P
                              888       "Y88P"
 __BANNER__
-
-    if [[ -t 1 ]]; then
-        banner="\033[0;34m$banner\033[0m" # NOT_COVERED
-    fi
-
-    echo -e "$banner"
 }
 
 __trim() {
@@ -264,14 +344,14 @@ __trim() {
     #
     local line
 
-    while read -r -t 1 line; do
+    while read -r -t "$__READ_TIMEOUT" line; do
         shopt -s extglob
 
         line=${line##+([[:space:]])}
         line=${line%%+([[:space:]])}
 
         if ((${#line} > 0)); then
-            printf '%s\n' "$line"
+            __putsn "$line"
         fi
     done
 }
@@ -284,24 +364,105 @@ __strip_prefix() {
     #
     # Lines which are blank after stripping are not send to output.
     #
-    if [[ -z ${1:-} ]]; then
-        __print_error "the prefix must be specified"
-        return $__EXIT_FAILURE
-    fi
-
-    readonly prefix=$1
+    local -r prefix=${1:?"the prefix must be specified"}
     local line
 
-    while read -r -t 1 line; do
+    while read -r -t "$__READ_TIMEOUT" line; do
         if [[ ${line:0:${#prefix}} == "$prefix" ]]; then
             line=${line:${#prefix}}
         fi
 
         if ((${#line} > 0)); then
-            printf '%s\n' "$line"
+            __putsn "$line"
         fi
     done
 
+}
+
+__is_version_greater() {
+    # __is_version_greater <version> <base>...
+    #
+    # Checks if the specified version is greater than the specified base
+    # version.
+    #
+    # The versions are expected to follow the *semver* specification.
+    # Only stable versions are considered.
+    #
+    local -r version=${1?"the version to compare must be specified"}
+    local -r base=${2?"the base version must be specified"}
+    local -a version_parts
+    local -a base_parts
+
+    if ((${#version} == 0)); then
+        return $__EXIT_FAILURE
+    fi
+
+    if ((${#base} == 0)); then
+        return $__EXIT_SUCCESS
+    fi
+
+    if [[ $version == "$base" ]]; then
+        return $__EXIT_FAILURE
+    fi
+
+    IFS='.' read -r -a version_parts <<<"$version"
+    IFS='.' read -r -a base_parts <<<"$base"
+
+    for ((i = 0; i < ${#version_parts[@]}; i++)); do
+        if ((version_parts[i] > base_parts[i])); then
+            return $__EXIT_SUCCESS
+        elif ((version_parts[i] < base_parts[i])); then
+            return $__EXIT_FAILURE
+        fi
+    done
+}
+
+__latest_matching_version() {
+    # __latest_matching_version <specifier>
+    #
+    # Gives the latest version matching the specifier from a list of versions.
+    #
+    # The versions are expected to follow the *semver* specification. The
+    # specifier can be a complete version (major.minor.patch) or omit one or
+    # more leading components.
+    #
+    # Only stable versions are considered.
+    #
+    if [[ -z ${1:-} ]]; then
+        __print_error "the specifier must be specified"
+        return $__EXIT_FAILURE
+    fi
+
+    local -r specifier=$1
+    local -r specifier_pattern=${specifier//./"\."}
+    local -i got_input=0
+    local version
+    local latest_version=""
+    local IFS
+
+    shopt -s extglob
+
+    while read -r -t "$__READ_TIMEOUT" version; do
+        got_input=1
+
+        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && $version =~ ^${specifier_pattern} ]]; then
+            if __is_version_greater "$version" "$latest_version"; then
+                latest_version="$version"
+            fi
+        fi
+    done
+
+    if ((!got_input)); then
+        __print_error "no input data"
+        return $__EXIT_FAILURE
+    fi
+
+    if [[ -z $latest_version ]]; then
+        __print_error "no matching version"
+        return $__EXIT_FAILURE
+    fi
+
+    __putsn "$latest_version"
 }
 
 __init_file() {
@@ -377,44 +538,7 @@ __windows_path() {
 
     fi
 
-    echo "$converted"
-}
-
-__latest_matching_version() {
-    # __latest_matching_version <specifier> <version>...
-    #
-    # Gives the latest version matching the specifier from a list of versions.
-    #
-    # The versions are expected to follow the *semver* specification. The
-    # specifier can be a complete version (major.minor.patch) or omit one or
-    # more leading components.
-    #
-    # Only stable versions are considered.
-    #
-    local -r specifier=${1:?the specifier must be specified}
-    local -r specifier_pattern=${specifier//./"\."}
-    shift
-    local versions=("${@:?the versions must be specified}")
-    local found_version=""
-    local IFS
-
-    if ((${#versions} == 0)); then
-        echo "the versions must not be empty" >&2
-        return $__EXIT_FAILURE
-    fi
-
-    #shellcheck disable=SC2207
-    IFS=$'\n' versions=($(sort -V <<<"${versions[*]}"))
-
-    shopt -s extglob
-
-    for version in "${versions[@]}"; do
-        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && $version =~ ^${specifier_pattern} ]]; then
-            found_version="$version"
-        fi
-    done
-
-    echo "$found_version"
+    __putsn "$converted"
 }
 
 __latest_git_tag() {
@@ -574,19 +698,10 @@ install_python() {
 
     local -r location=${1:?the installation directory must be specified}
     local -r specifier=${2:?the specifier must be specified}
-    local -a available_versions
     local version
     export PATH
 
-    # shellcheck disable=SC2207
-    available_versions=($(__available_python_versions))
-
-    if ((${#available_versions[@]} == 0)); then
-        __print_error "No Python version available."
-        return $__EXIT_FAILURE
-    fi
-
-    version=$(__latest_matching_version "$specifier" "${available_versions[@]}")
+    version=$(__available_python_versions | __latest_matching_version "$specifier")
 
     if [[ -z $version ]]; then
         __print_error "No Python version found matching $specifier."

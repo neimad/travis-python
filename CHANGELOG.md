@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+### Changed
+ - Use stream based functions internally.
 
 ## [1.1.0] - 2020-04-16
 ### Added

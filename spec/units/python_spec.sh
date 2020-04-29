@@ -89,14 +89,6 @@ Describe "install_python()"
         The error should end with "the specifier must be specified"
     End
 
-    It "fails when no Python version are available"
-        stub '__available_python_versions' -o ""
-
-        When run install_python "foo" "3.7"
-        The status should be failure
-        The error should equal "No Python version available."
-    End
-
     It "fails when no Python version are matching the specifier"
         stub '__available_python_versions' -o "3.6.7" "3.6.8" "3.6.9"
         stub '__latest_matching_version' -o ""

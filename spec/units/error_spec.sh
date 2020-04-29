@@ -2,20 +2,36 @@
 
 Include ./travis-python.bash
 
+Describe "__stderr"
+    It "redirects its standard input to standard error stream"
+        Data
+            #|foo
+        End
+
+        When call __stderr
+        The error should equal "foo"
+    End
+End
+
 Describe "__travis_python_error()"
     It "allows to specify the status of the last command"
-        When call __travis_python_error 21
-        The status should be success
-        The line 4 of error should end with "exited with status 21."
+        When call __travis_python_error -s 21
+        The error should include "exited with status 21."
     End
 
-    It "prints the complete command"
-        When call __travis_python_error
-        The status should be success
-        The line 1 of error should be blank
-        The line 2 of error should equal "Command failed"
-        The line 3 of error should equal "--------------"
-        The line 4 of error should match pattern "\`*\` exited with status ?."
+    It "allows to specify the command which failed"
+        When call __travis_python_error -c "foo --bar"
+        The error should include "
+Command failed
+==============
+foo --bar
+"
+    End
+
+    It "fails if an unknown option is passed"
+        When call __travis_python_error -z
+        The status should be failure
+        The error should include "illegal option -- z"
     End
 
     It "prints standard output of the silenced command"
@@ -23,11 +39,11 @@ Describe "__travis_python_error()"
         ! __run_silent foo
 
         When call __travis_python_error
-        The status should be success
-        The line 5 of error should be blank
-        The line 6 of error should equal "Command standard output"
-        The line 7 of error should equal "-----------------------"
-        The line 8 of error should equal "output"
+        The error should include "
+Command standard output
+-----------------------
+output
+"
     End
 
     It "prints standard error of the silenced command"
@@ -35,16 +51,15 @@ Describe "__travis_python_error()"
         ! __run_silent foo
 
         When call __travis_python_error
-        The status should be success
-        The line 5 of error should be blank
-        The line 6 of error should equal "Command standard error"
-        The line 7 of error should equal "----------------------"
-        The line 8 of error should equal "error"
+        The error should include "
+Command standard error
+----------------------
+error
+"
     End
 
     It "prints information about the environment"
         When call __travis_python_error
-        The status should be success
         The error should match pattern "*
 
 Environment
@@ -56,7 +71,9 @@ Bash *
     - *
     - *
     *
+
 Working in directory $PWD.
+
 Using PATH:
   - *
   - *"

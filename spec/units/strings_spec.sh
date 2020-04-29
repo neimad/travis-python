@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 
 Describe "__trim()"
-    It "exits if input is empty"
+    It "exits if there isn't any input"
         When call __trim
-        The entire output should be blank
+        The status should be success
     End
 
-    It "keeps an empty line untouched"
+    It "keeps a blank line untouched"
         Data ""
         When call __trim
-        The entire output should equal ""
+        The entire output should be blank
     End
 
     Context
@@ -69,7 +69,7 @@ Describe "__trim()"
         The lines of entire output should equal 2
     End
 
-    It "removes empty lines"
+    It "removes blank lines"
         Data
             #|
             #|foo
@@ -107,18 +107,23 @@ End
 
 Describe "__strip_prefix()"
     It "fails when the prefix is not specified"
-        When call __strip_prefix
+        When run __strip_prefix
         The status should be failure
         The error should end with "the prefix must be specified"
     End
 
     It "fails when the prefix is blank"
-        When call __strip_prefix ""
+        When run __strip_prefix ""
         The status should be failure
         The error should end with "the prefix must be specified"
     End
 
-    It "exits if input is empty"
+    It "exits if there isn't any input"
+        When call __strip_prefix "foo"
+        The status should be success
+    End
+
+    It "keeps a blank line untouched"
         When call __strip_prefix "foo"
         The entire output should be blank
     End
@@ -163,7 +168,7 @@ Describe "__strip_prefix()"
         The lines of entire output should equal 2
     End
 
-    It "removes empty lines"
+    It "removes blank lines"
         Data
             #|
             #|
@@ -187,5 +192,19 @@ Describe "__strip_prefix()"
         The line 1 of entire output should equal bar
         The line 2 of entire output should equal baz
         The lines of entire output should equal 2
+    End
+
+    It "strips prefixes"
+        Data
+            #|python|2.4.6
+            #|python|2.4.7
+            #|python|2.4.8
+        End
+
+        When call __strip_prefix "python|"
+        The line 1 of entire output should equal "2.4.6"
+        The line 2 of entire output should equal "2.4.7"
+        The line 3 of entire output should equal "2.4.8"
+        The lines of entire output should equal 3
     End
 End
