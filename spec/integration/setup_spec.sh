@@ -22,13 +22,10 @@ Context "When on Travis CI"
                 dummy __print_banner
 
                 When call setup_travis_python
-                The line 1 of output should equal "  version: $TRAVIS_PYTHON_VERSION"
-                The line 2 of output should be blank
-                The line 3 of output should equal "> Installing python-build..."
-                The line 4 of output should equal "  requested location: $TRAVIS_PYTHON_DIR/builder"
-                The line 5 of output should match pattern "  installed version: *"
-                The line 6 of output should equal "  Done."
-                The lines of output should equal 6
+                The output should include "version: $TRAVIS_PYTHON_VERSION"
+                The output should include "> Installing python-build..."
+                The output should include "requested location: $TRAVIS_PYTHON_DIR/builder"
+                The output should include "installed version:"
                 The result of function "python_build_version" should match pattern 'python-build ????????'
                 The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
                 The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"

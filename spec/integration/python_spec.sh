@@ -30,15 +30,12 @@ Context "When on Travis CI"
             fi
 
             When call install_python "$directory/python" "$PYTHON"
-            The line 1 of output should be blank
-            The line 2 of output should equal "> Installing Python..."
-            The line 3 of output should equal "  requested version: $PYTHON"
-            The line 4 of output should match pattern "  found version: *"
-            The line 5 of output should equal "  requested location: $directory/python"
-            The line 6 of output should match pattern "  installed version: *"
-            The line 7 of output should equal "  Done."
-            The lines of output should equal 7
-            The result of function "python_version" should start with "Python $PYTHON"
+            The output should include "> Installing Python..."
+            The output should include "requested version: $PYTHON"
+            The output should include "found version:"
+            The output should include "requested location: $directory/python"
+            The output should include "installed version:"
+            The result of function "python_version" should match pattern "Python $PYTHON*"
             The result of function "python_location" should equal "$directory/python/$binary_path"
         End
     End
