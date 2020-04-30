@@ -13,6 +13,6 @@ shellspec_helper_configure() {
     shellspec_after 'cleanup_travis_python_directory'
 
     if ((BASH_VERSINFO[0] >= 4)); then
-        export TRAVIS_PYTHON_READ_TIMEOUT=0.01
+        export TRAVIS_PYTHON_READ_TIMEOUT=0.1
     fi
 }
