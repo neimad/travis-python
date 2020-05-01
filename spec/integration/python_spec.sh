@@ -5,9 +5,16 @@ Include ./travis-python.bash
 Context "When on Travis CI"
     Skip if "not on Travis CI" test "${TRAVIS:-}" != 'true'
 
-    Before 'setup_directory'
+    Before 'setup_directory' 'setup_travis_python'
     After 'cleanup_directory'
     directory=${directory:-}
+
+    Describe "__available_python_versions()"
+        It "gets the list of available versions"
+            When call __available_python_versions
+            The output should not be blank
+        End
+    End
 
     Describe "install_python()"
         Skip if "Python version is not specified" test -z "${PYTHON:-}"
@@ -22,8 +29,6 @@ Context "When on Travis CI"
         }
 
         It "installs Python ${PYTHON:-$'\b'} to specified directory"
-            setup_travis_python
-
             binary_path=bin/python
             if [[ ${TRAVIS_OS_NAME:-} == 'windows' ]]; then
                 binary_path=python
