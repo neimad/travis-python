@@ -89,15 +89,6 @@ Describe "install_python()"
         The error should end with "the specifier must be specified"
     End
 
-    It "fails when no Python version are matching the specifier"
-        stub '__available_python_versions' -o "3.6.7" "3.6.8" "3.6.9"
-        stub '__latest_matching_version' -o ""
-
-        When run install_python "foo" "3.7"
-        The status should be failure
-        The error should equal "No Python version found matching 3.7."
-    End
-
     Before 'setup_directory'
     After 'cleanup_directory'
     directory=${directory:-}
@@ -119,8 +110,8 @@ Describe "install_python()"
             The line 1 of entire output should be blank
             The line 2 of entire output should equal "> Installing Python..."
             The line 3 of entire output should equal "  requested version: 3.7"
-            The line 4 of entire output should equal "  found version: 3.7.2"
-            The line 5 of entire output should equal "  requested location: $directory"
+            The line 4 of entire output should equal "  requested location: $directory"
+            The line 5 of entire output should equal "  found version: 3.7.2"
             The line 6 of entire output should equal "  installed version: 3.7.2"
             The line 7 of entire output should equal "  Done."
             The lines of entire output should equal 7
@@ -145,8 +136,8 @@ Describe "install_python()"
             The line 1 of entire output should be blank
             The line 2 of entire output should equal "> Installing Python..."
             The line 3 of entire output should equal "  requested version: 3.7"
-            The line 4 of entire output should equal "  found version: 3.7.2"
-            The line 5 of entire output should equal "  requested location: $directory"
+            The line 4 of entire output should equal "  requested location: $directory"
+            The line 5 of entire output should equal "  found version: 3.7.2"
             The line 6 of entire output should equal "  installed version: 3.7.2"
             The line 7 of entire output should equal "  Done."
             The lines of entire output should equal 7
@@ -168,8 +159,8 @@ Describe "install_python()"
             The line 1 of entire output should be blank
             The line 2 of entire output should equal "> Installing Python..."
             The line 3 of entire output should equal "  requested version: 3.7"
-            The line 4 of entire output should equal "  found version: 3.7.2"
-            The line 5 of entire output should equal "  requested location: $directory"
+            The line 4 of entire output should equal "  requested location: $directory"
+            The line 5 of entire output should equal "  found version: 3.7.2"
             The line 6 of entire output should equal "  installed version: 3.7.2"
             The line 7 of entire output should equal "  Done."
             The lines of entire output should equal 7

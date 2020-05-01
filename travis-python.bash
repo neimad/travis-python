@@ -701,17 +701,13 @@ install_python() {
     local version
     export PATH
 
-    version=$(__available_python_versions | __latest_matching_version "$specifier")
-
-    if [[ -z $version ]]; then
-        __print_error "No Python version found matching $specifier."
-        return $__EXIT_FAILURE
-    fi
-
     __print_task "Installing Python"
     __print_info "requested version" "$specifier"
-    __print_info "found version" "$version"
     __print_info "requested location" "$location"
+
+    version=$(__available_python_versions | __latest_matching_version "$specifier")
+
+    __print_info "found version" "$version"
 
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __run_silent choco install python \
