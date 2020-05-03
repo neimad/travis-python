@@ -161,11 +161,11 @@ Describe "__strip_prefix()"
 
     It "removes the specified prefix from multiple lines"
         Data
-            #|foobar
-            #|foobaz
+            #|foo|bar
+            #|foo|baz
         End
 
-        When call __strip_prefix "foo"
+        When call __strip_prefix "foo|"
         The line 1 of entire output should equal "bar"
         The line 2 of entire output should equal "baz"
         The lines of entire output should equal 2
@@ -195,19 +195,5 @@ Describe "__strip_prefix()"
         The line 1 of entire output should equal bar
         The line 2 of entire output should equal baz
         The lines of entire output should equal 2
-    End
-
-    It "strips prefixes"
-        Data
-            #|python|2.4.6
-            #|python|2.4.7
-            #|python|2.4.8
-        End
-
-        When call __strip_prefix "python|"
-        The line 1 of entire output should equal "2.4.6"
-        The line 2 of entire output should equal "2.4.7"
-        The line 3 of entire output should equal "2.4.8"
-        The lines of entire output should equal 3
     End
 End
