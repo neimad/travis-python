@@ -63,10 +63,14 @@ Describe "__latest_matching_version()"
         The error should end with "the specifier must be specified"
     End
 
-    It "fails when input is blank"
-        When call __latest_matching_version "1.0"
-        The status should be failure
-        The error should include "no input data"
+    Context
+        Before 'decrease_travis_python_read_timeout'
+
+        It "fails when input is blank"
+            When call __latest_matching_version "1.0"
+            The status should be failure
+            The error should include "no input data"
+        End
     End
 
     Context

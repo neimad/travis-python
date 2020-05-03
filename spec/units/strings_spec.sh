@@ -4,9 +4,13 @@ Include ./travis-python.bash
 
 
 Describe "__trim()"
-    It "exits if there isn't any input"
-        When call __trim
-        The status should be success
+    Context
+        Before 'decrease_travis_python_read_timeout'
+
+        It "exits if there isn't any input"
+            When call __trim
+            The status should be success
+        End
     End
 
     It "keeps a blank line untouched"
@@ -118,14 +122,13 @@ Describe "__strip_prefix()"
         The error should end with "the prefix must be specified"
     End
 
-    It "exits if there isn't any input"
-        When call __strip_prefix "foo"
-        The status should be success
-    End
+    Context
+        Before 'decrease_travis_python_read_timeout'
 
-    It "keeps a blank line untouched"
-        When call __strip_prefix "foo"
-        The entire output should be blank
+        It "exits if there isn't any input"
+            When call __strip_prefix "foo"
+            The status should be success
+        End
     End
 
     It "removes the specified prefix"

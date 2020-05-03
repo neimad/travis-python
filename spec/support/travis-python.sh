@@ -23,3 +23,21 @@ cleanup_travis_python_directory() {
     rm -Rf "$TRAVIS_PYTHON_DIR"
     TRAVIS_PYTHON_DIR=
 }
+
+decrease_travis_python_read_timeout() {
+    # decrease_travis_python_read_timeout
+    #
+    # The `read` timeout used by travis-python functions is reduced to a minimal
+    # functional value.
+    #
+    # It is intended to speed up test where the input is blank.
+    #
+    export TRAVIS_PYTHON_READ_TIMEOUT
+    local -r bash_release=${BASH_VERSINFO[0]}
+
+    if ((bash_release > 3)); then
+        TRAVIS_PYTHON_READ_TIMEOUT=0.1
+    else
+        TRAVIS_PYTHON_READ_TIMEOUT=1
+    fi
+}

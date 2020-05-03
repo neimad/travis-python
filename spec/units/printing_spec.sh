@@ -45,9 +45,14 @@ Describe "__colorize()"
         The error should end with "the color 'foo' is unknown"
     End
 
-    It "exits if there isn't any input"
-        When call __colorize "green"
-        The status should be success
+    Context
+        Before 'decrease_travis_python_read_timeout'
+
+        It "exits if there isn't any input"
+
+            When call __colorize "green"
+            The status should be success
+        End
     End
 
     It "keeps a blank line untouched"

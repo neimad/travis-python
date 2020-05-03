@@ -4,13 +4,13 @@
 
 TRAVIS_PYTHON_VERSION="1.1.0"
 : "${TRAVIS_PYTHON_DIR:=$HOME/travis-python}"
+: "${TRAVIS_PYTHON_READ_TIMEOUT:=10}"
 
 __TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME=silent_output
 __TRAVIS_PYTHON_SILENT_ERROR_FILENAME=silent_error
 
 readonly __EXIT_FAILURE=1
 readonly __EXIT_SUCCESS=0
-readonly __READ_TIMEOUT=${TRAVIS_PYTHON_READ_TIMEOUT:-1}
 
 __travis_python_error() {
     # __travis_python_error [-c <command>] [-s <status>]
@@ -250,7 +250,7 @@ __colorize() {
     fi
 
     # Print each line of input
-    while IFS= read -r -t "$__READ_TIMEOUT" line; do
+    while IFS= read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
         __putsn "$line"
     done
 
@@ -344,7 +344,7 @@ __trim() {
     #
     local line
 
-    while read -r -t "$__READ_TIMEOUT" line; do
+    while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
         shopt -s extglob
 
         line=${line##+([[:space:]])}
@@ -367,7 +367,7 @@ __strip_prefix() {
     local -r prefix=${1:?"the prefix must be specified"}
     local line
 
-    while read -r -t "$__READ_TIMEOUT" line; do
+    while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
         if [[ ${line:0:${#prefix}} == "$prefix" ]]; then
             line=${line:${#prefix}}
         fi
@@ -442,7 +442,7 @@ __latest_matching_version() {
 
     shopt -s extglob
 
-    while read -r -t "$__READ_TIMEOUT" version; do
+    while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" version; do
         got_input=1
 
         if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && $version =~ ^${specifier_pattern} ]]; then
