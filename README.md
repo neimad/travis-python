@@ -69,26 +69,28 @@ Documentation
 
 [Some documentation] is available.
 
-Behind the scene
-----------------
+Why and how ?
+-------------
 
 To provide a similar Python environment for the three operating systems
 available on Travis CI, we have to deal with many issues:
 
- - the Python language is only officialy supported on Linux,
+ - the Python language is only officialy supported on Linux Travis CI machines,
  - Python environments use different executables names depending on the OS
    pointing alternatively to Python 3 or Python 2 executables,
- - choosing the Python version is challenging: it depends on the OS version and
-   installing a custom Python distribution depends on the packages management
-   system.
+ - fetching a specific Python version is challenging: it depends on the OS
+   version and installing a custom Python distribution depends on the packages
+   management system.
 
 To solve those problems, some directions have been taken:
 
  - use python-build from Pyenv to install Python environment on Linux and macOS,
  - use Chocolatey to install Python environment on Windows,
- - use a pure Bash script because it is the shell commonly available on all
-   operating systems available on Travis CI,
- - use a Bash 3.2 compatible script because it is the one available on macOS.
+ - use a Bash script because it is the shell commonly available on all operating
+   systems available on Travis CI,
+ - use a Bash 3.2 compatible script because it is the one available on macOS,
+ - use pure Bash functions because external program may differ in behavior
+   depending on the operating system type and version.
 
 Development
 -----------
