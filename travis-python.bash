@@ -668,7 +668,8 @@ setup_travis_python() {
         windows)
             # Workaround for https://github.com/chocolatey/choco/issues/1843
             __print_task "Downgrading Chocolatey"
-            __print_info "version" "$(choco --version)"
+            __print_info "current version" "$(choco --version)"
+            __print_info "requested version" "0.10.13"
             __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
             __print_task_done
             ;;
