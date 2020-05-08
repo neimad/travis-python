@@ -28,28 +28,27 @@ End
 
 Describe "__colorize()"
     It "fails when the color is not specified"
-        When run __colorize
+        When call __colorize
         The status should be failure
-        The error should end with "the color must be specified"
+        The error should equal "__colorize: the color must be specified"
     End
 
     It "fails when the color is blank"
-        When run __colorize ""
+        When call __colorize ""
         The status should be failure
-        The error should end with "the color must be specified"
+        The error should equal "__colorize: the color must be specified"
     End
 
     It "fails when the specified color is unknown"
-        When run __colorize "foo"
+        When call __colorize "foo"
         The status should be failure
-        The error should end with "the color 'foo' is unknown"
+        The error should equal "__colorize: the color 'foo' is unknown"
     End
 
     Context
         Before 'decrease_travis_python_read_timeout'
 
         It "exits if there isn't any input"
-
             When call __colorize "green"
             The status should be success
         End
@@ -59,6 +58,7 @@ Describe "__colorize()"
         Data
             #|
         End
+
         When call __colorize "blue"
         The entire output should equal $'\n'
     End
@@ -87,15 +87,15 @@ End
 
 Describe "__print_error()"
     It "fails when the message is not specified"
-        When run __print_error
+        When call __print_error
         The status should be failure
-        The error should end with "the message must be specified"
+        The error should equal "__print_error: the message must be specified"
     End
 
     It "fails when the message is blank"
-        When run __print_error ""
+        When call __print_error ""
         The status should be failure
-        The error should end with "the message must be specified"
+        The error should equal "__print_error: the message must be specified"
     End
 
     It "prints a message to standard error"
@@ -106,15 +106,15 @@ End
 
 Describe "__print_info()"
     It "fails when the name is not specified"
-        When run __print_info
+        When call __print_info
         The status should be failure
-        The error should end with "the name must be specified"
+        The error should equal "__print_info: the name must be specified"
     End
 
     It "fails when the name is blank"
-        When run __print_info ""
+        When call __print_info ""
         The status should be failure
-        The error should end with "the name must be specified"
+        The error should equal "__print_info: the name must be specified"
     End
 
     It "prints the given name and value to standard output"
@@ -135,15 +135,15 @@ End
 
 Describe "__print_task()"
     It "fails when the task description is not specified"
-        When run __print_task
+        When call __print_task
         The status should be failure
-        The error should end with "the description must be specified"
+        The error should equal "__print_task: the description must be specified"
     End
 
     It "fails when the task description is blank"
-        When run __print_task ""
+        When call __print_task ""
         The status should be failure
-        The error should end with "the description must be specified"
+        The error should equal "__print_task: the description must be specified"
     End
 End
 

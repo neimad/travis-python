@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__init_file()"
     It "fails when the path is not specified"
-        When run __init_file
+        When call __init_file
         The status should be failure
-        The error should end with "the path must be specified"
+        The error should equal "__init_file: the path must be specified"
     End
 
     It "fails when the path is blank"
-        When run __init_file ""
+        When call __init_file ""
         The status should be failure
-        The error should end with "the path must be specified"
+        The error should equal "__init_file: the path must be specified"
     End
 
     Before 'setup_directory'

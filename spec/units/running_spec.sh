@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__run_silent()"
     It "fails when the command is not specified"
-        When run __run_silent
+        When call __run_silent
         The status should be failure
-        The error should end with "the command must be specified"
+        The error should equal "__run_silent: the command must be specified"
     End
 
     It "fails when the command is blank"
-        When run __run_silent "" ""
+        When call __run_silent ""
         The status should be failure
-        The error should end with "the command must be specified"
+        The error should equal "__run_silent: the command must be specified"
     End
 
     It "runs a command"

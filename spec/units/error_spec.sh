@@ -13,6 +13,30 @@ Describe "__stderr"
     End
 End
 
+Describe "__error()"
+    It "prints the specified message to stderr"
+        foo() {
+            __error "bar"
+        }
+
+        When call foo
+        The error should equal "foo: bar"
+        The status should be failure
+    End
+End
+
+Describe "__required()"
+    It "prints a dedicated error message if the value is blank"
+        foo() {
+            __required "${1:-}" "the argument"
+        }
+
+        When call foo ""
+        The status should be failure
+        The error should equal "foo: the argument must be specified"
+    End
+End
+
 Describe "__travis_python_error()"
     It "allows to specify the status of the last command"
         When call __travis_python_error -s 21

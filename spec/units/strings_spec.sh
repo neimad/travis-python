@@ -111,15 +111,15 @@ End
 
 Describe "__strip_prefix()"
     It "fails when the prefix is not specified"
-        When run __strip_prefix
+        When call __strip_prefix
         The status should be failure
-        The error should end with "the prefix must be specified"
+        The error should equal "__strip_prefix: the prefix must be specified"
     End
 
     It "fails when the prefix is blank"
-        When run __strip_prefix ""
+        When call __strip_prefix ""
         The status should be failure
-        The error should end with "the prefix must be specified"
+        The error should equal "__strip_prefix: the prefix must be specified"
     End
 
     Context

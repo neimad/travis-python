@@ -6,17 +6,17 @@ Describe "setup_travis_python()"
     It "needs the TRAVIS_OS_NAME environment variable to be set"
         unset TRAVIS_OS_NAME
 
-        When run setup_travis_python
+        When call setup_travis_python
         The status should be failure
-        The error should end with "TRAVIS_OS_NAME: must be set and not null"
+        The error should equal "setup_travis_python: the TRAVIS_OS_NAME environment variable must be set and not null"
     End
 
     It "needs the TRAVIS_OS_NAME environment variable to be not null"
         TRAVIS_OS_NAME=
 
-        When run setup_travis_python
+        When call setup_travis_python
         The status should be failure
-        The error should end with "TRAVIS_OS_NAME: must be set and not null"
+        The error should equal "setup_travis_python: the TRAVIS_OS_NAME environment variable must be set and not null"
     End
 
     It "fails when the platform is not supported"
@@ -24,7 +24,7 @@ Describe "setup_travis_python()"
 
         When call setup_travis_python
         The status should be failure
-        The error should include "The 'bar' platform is not supported"
+        The error should equal "setup_travis_python: the 'bar' platform is not supported"
         The output should not be blank
     End
 

@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__is_version_greater()"
     It "fails when the version to compare is not specified"
-        When run __is_version_greater
+        When call __is_version_greater
         The status should be failure
-        The error should end with "the version to compare must be specified"
+        The error should equal "__is_version_greater: the version to compare must be specified"
     End
 
     It "fails when the base version is not specified"
-        When run __is_version_greater "1.0.0"
+        When call __is_version_greater "1.0.0"
         The status should be failure
-        The error should end with "the base version must be specified"
+        The error should equal "__is_version_greater: the base version must be specified"
     End
 
     It "considers a blank compared version to be lower"
@@ -54,13 +54,13 @@ Describe "__latest_matching_version()"
     It "fails when the specifier is not specified"
         When call __latest_matching_version
         The status should be failure
-        The error should end with "the specifier must be specified"
+        The error should equal "__latest_matching_version: the version specifier must be specified"
     End
 
     It "fails when the specifier is blank"
         When call __latest_matching_version ""
         The status should be failure
-        The error should end with "the specifier must be specified"
+        The error should equal "__latest_matching_version: the version specifier must be specified"
     End
 
     Context
@@ -69,7 +69,7 @@ Describe "__latest_matching_version()"
         It "fails when input is blank"
             When call __latest_matching_version "1.0"
             The status should be failure
-            The error should include "no input data"
+            The error should equal "__latest_matching_version: no input data"
         End
     End
 
@@ -111,7 +111,7 @@ Describe "__latest_matching_version()"
 
         When call __latest_matching_version "1.0"
         The status should be failure
-        The error should end with "no matching version"
+        The error should equal "__latest_matching_version: no matching version"
     End
 
     It "sorts versions naturally"

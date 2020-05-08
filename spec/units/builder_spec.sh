@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__install_builder()"
     It "fails when the directory is not specified"
-        When run __install_builder
+        When call __install_builder
         The status should be failure
-        The error should end with "the installation directory must be specified"
+        The error should equal "__install_builder: the installation directory must be specified"
     End
 
     It "fails when the directory is blank"
-        When run __install_builder
+        When call __install_builder ""
         The status should be failure
-        The error should end with "the installation directory must be specified"
+        The error should equal "__install_builder: the installation directory must be specified"
     End
 
     Before 'setup_directory'

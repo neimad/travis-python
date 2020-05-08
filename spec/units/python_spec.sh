@@ -66,27 +66,27 @@ End
 
 Describe "install_python()"
     It "fails when the directory is not specified"
-        When run install_python
+        When call install_python
         The status should be failure
-        The error should end with "the installation directory must be specified"
+        The error should equal "install_python: the installation directory must be specified"
     End
 
     It "fails when the directory name is blank"
-        When run install_python ""
+        When call install_python ""
         The status should be failure
-        The error should end with "the installation directory must be specified"
+        The error should equal "install_python: the installation directory must be specified"
     End
 
     It "fails when the specifier is not given"
-        When run install_python "foo"
+        When call install_python "foo"
         The status should be failure
-        The error should end with "the specifier must be specified"
+        The error should equal "install_python: the version specifier must be specified"
     End
 
     It "fails when the specifier is blank"
-        When run install_python "foo" ""
+        When call install_python "foo" ""
         The status should be failure
-        The error should end with "the specifier must be specified"
+        The error should equal "install_python: the version specifier must be specified"
     End
 
     Before 'setup_directory'

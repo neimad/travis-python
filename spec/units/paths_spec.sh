@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__windows_path()"
     It "fails when the path is not specified"
-        When run __windows_path
+        When call __windows_path
         The status should be failure
-        The error should end with "the path must be specified"
+        The error should equal "__windows_path: the path must be specified"
     End
 
     It "fails when the path is blank"
-        When run __windows_path ""
+        When call __windows_path ""
         The status should be failure
-        The error should end with "the path must be specified"
+        The error should equal "__windows_path: the path must be specified"
     End
 
     Context "when the path is Windows flavor,"

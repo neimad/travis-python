@@ -4,15 +4,15 @@ Include ./travis-python.bash
 
 Describe "__latest_git_tag()"
     It "fails when the directory is not specified"
-        When run __latest_git_tag
+        When call __latest_git_tag
         The status should be failure
-        The error should end with "the directory must be specified"
+        The error should equal "__latest_git_tag: the directory must be specified"
     End
 
     It "fails when the directory name is blank string"
-        When run __latest_git_tag ""
+        When call __latest_git_tag ""
         The status should be failure
-        The error should end with "the directory must be specified"
+        The error should equal "__latest_git_tag: the directory must be specified"
     End
 
     It "asks Git for the latest tag"
@@ -25,27 +25,27 @@ End
 
 Describe "__update_git_repo()"
     It "fails when the URL is not specified"
-        When run __update_git_repo
+        When call __update_git_repo
         The status should be failure
-        The error should end with "the URL must be specified"
+        The error should equal "__update_git_repo: the URL must be specified"
     End
 
     It "fails when the URL is blank"
-        When run __update_git_repo ""
+        When call __update_git_repo ""
         The status should be failure
-        The error should end with "the URL must be specified"
+        The error should equal "__update_git_repo: the URL must be specified"
     End
 
     It "fails when the directory is not specified"
-        When run __update_git_repo "https://foo"
+        When call __update_git_repo "https://foo"
         The status should be failure
-        The error should end with "the directory must be specified"
+        The error should equal "__update_git_repo: the directory must be specified"
     End
 
     It "fails when the directory name is blank string"
-        When run __update_git_repo "https://foo" ""
+        When call __update_git_repo "https://foo" ""
         The status should be failure
-        The error should end with "the directory must be specified"
+        The error should equal "__update_git_repo: the directory must be specified"
     End
 
     Before 'setup_directory'

@@ -225,6 +225,8 @@ __colorize() {
     # Apply the specified foreground color to the received input and send it to
     # standard output.
     #
+    __required "${1:-}" "the color" || return
+
     local -r CSI=$'\e['
     local -r reset="${CSI}m"
     # shellcheck disable=SC2034
@@ -237,10 +239,14 @@ __colorize() {
         code_magenta=35 \
         code_cyan=36 \
         code_white=37
-    local -r color=${1:?the color must be specified}
+    local -r color=$1
     local -r code_name=code_${color}
-    local -r code=${!code_name:?the color \'$color\' is unknown}
+    local -r code=${!code_name:-}
     local line
+
+    if [[ -z $code ]]; then
+        __error "the color '$color' is unknown" || return
+    fi
 
     if [[ -t 1 ]]; then
         # NOT_COVERED_START
@@ -266,12 +272,40 @@ __colorize() {
     fi
 }
 
+__error() {
+    # __error <message>
+    #
+    # Prints the given error message to standard error in red, prefixed by the
+    # name of the caller and returns _EXIT_FAILURE.
+    #
+    __putsn "${FUNCNAME[1]}: ${1:-}" | __stderr
+
+    return $__EXIT_FAILURE
+}
+
+__required() {
+    # __required <value> <description>
+    #
+    # If the given value is not null, do nothing.
+    # Otherwize, prints an error message according to the given description to
+    # standard error in red, prefixed by the name of the caller and return
+    # __EXIT_FAILURE.
+    #
+    if [[ -z ${1:-} ]]; then
+        __putsn "${FUNCNAME[1]}: ${2:-} must be specified" | __stderr
+
+        return $__EXIT_FAILURE
+    fi
+}
+
 __print_error() {
     # __print_error <message>
     #
     # Prints the given error message to the standard error stream in red.
     #
-    local -r message=${1:?the message must be specified}
+    __required "${1:-}" "the message" || return
+
+    local -r message=$1
 
     __putsn "$message" | __colorize "red" >&2
 }
@@ -281,7 +315,9 @@ __print_info() {
     #
     # Prints the given name and value to the standard ouput stream.
     #
-    local -r name=${1:?the name must be specified}
+    __required "${1:-}" "the name" || return
+
+    local -r name=$1
     local -r value=${2:-<null>}
 
     __puts "  $name:" | __colorize "yellow"
@@ -293,7 +329,9 @@ __print_task() {
     #
     # Prints a message to standard output showing that a task started.
     #
-    local -r description=${1:?the description must be specified}
+    __required "${1:-}" "the description" || return
+
+    local -r description=$1
 
     __putsn
     __puts ">" | __colorize "yellow"
@@ -364,7 +402,9 @@ __strip_prefix() {
     #
     # Lines which are blank after stripping are not send to output.
     #
-    local -r prefix=${1:?"the prefix must be specified"}
+    __required "${1:-}" "the prefix" || return
+
+    local -r prefix=$1
     local line
 
     while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
@@ -388,8 +428,17 @@ __is_version_greater() {
     # The versions are expected to follow the *semver* specification.
     # Only stable versions are considered.
     #
-    local -r version=${1?"the version to compare must be specified"}
-    local -r base=${2?"the base version must be specified"}
+    case $# in
+        0)
+            __error "the version to compare must be specified" || return
+            ;;
+        1)
+            __error "the base version must be specified" || return
+            ;;
+    esac
+
+    local -r version=$1
+    local -r base=$2
     local -a version_parts
     local -a base_parts
 
@@ -428,10 +477,7 @@ __latest_matching_version() {
     #
     # Only stable versions are considered.
     #
-    if [[ -z ${1:-} ]]; then
-        __print_error "the specifier must be specified"
-        return $__EXIT_FAILURE
-    fi
+    __required "${1:-}" "the version specifier" || return
 
     local -r specifier=$1
     local -r specifier_pattern=${specifier//./"\."}
@@ -453,13 +499,11 @@ __latest_matching_version() {
     done
 
     if ((!got_input)); then
-        __print_error "no input data"
-        return $__EXIT_FAILURE
+        __error "no input data" || return
     fi
 
     if [[ -z $latest_version ]]; then
-        __print_error "no matching version"
-        return $__EXIT_FAILURE
+        __error "no matching version" || return
     fi
 
     __putsn "$latest_version"
@@ -473,7 +517,9 @@ __init_file() {
     # All parent directories are created if needed. If the file already exists,
     # it is overwritten.
     #
-    local -r path=${1:?the path must be specified}
+    __required "${1:-}" "the path" || return
+
+    local -r path=$1
 
     mkdir -p "$(dirname "$path")"
     : >|"$path"
@@ -488,7 +534,8 @@ __run_silent() {
     # and stderr). If the command exists with a status code other than 0, its
     # output will be available to the `__travis_python_error` handler.
     #
-    : "${1:?the command must be specified}"
+    __required "$*" "the command" || return
+
     local -r output_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_OUTPUT_FILENAME
     local -r error_file=$TRAVIS_PYTHON_DIR/$__TRAVIS_PYTHON_SILENT_ERROR_FILENAME
     local -i status
@@ -516,7 +563,9 @@ __windows_path() {
     #
     # Converts a Unix path to Windows flavor.
     #
-    local -r path=${1:?the path must be specified}
+    __required "${1:-}" "the path" || return
+
+    local -r path=$1
     local converted
     local drive_letter
 
@@ -547,7 +596,9 @@ __latest_git_tag() {
     # Gives the latest tag from the Git repository located at the specified
     # directory.
     #
-    local -r directory=${1:?the directory must be specified}
+    __required "${1:-}" "the directory" || return
+
+    local -r directory=$1
 
     git -C "$directory" describe --abbrev=0 --tags
 }
@@ -562,8 +613,11 @@ __update_git_repo() {
     # Otherwise, it is only fetched.
     # Then, the latest tag is checked out.
     #
-    local -r url=${1:?the URL must be specified}
-    local -r directory=${2:?the directory must be specified}
+    __required "${1:-}" "the URL" || return
+    __required "${2:-}" "the directory" || return
+
+    local -r url=$1
+    local -r directory=$2
     local latest_tag
 
     if [[ ! -d $directory ]]; then
@@ -596,7 +650,9 @@ __install_builder() {
     # The `PATH` is updated to include the `bin` directory and the shell
     # commands hash table is reset.
     #
-    local directory=${1:?the installation directory must be specified}
+    __required "${1:-}" "the installation directory" || return
+
+    local -r directory=$1
     local -r repo_url="https://github.com/pyenv/pyenv"
     local -r clone_directory="/tmp/pyenv"
     local -r installer="$clone_directory/plugins/python-build/install.sh"
@@ -659,7 +715,9 @@ setup_travis_python() {
     #
     __be_strict
 
-    : "${TRAVIS_OS_NAME:?must be set and not null}"
+    if [[ -z ${TRAVIS_OS_NAME:-} ]]; then
+        __error "the TRAVIS_OS_NAME environment variable must be set and not null" || return
+    fi
 
     __print_banner
     __print_info "version" $TRAVIS_PYTHON_VERSION
@@ -677,8 +735,7 @@ setup_travis_python() {
             __install_builder "$TRAVIS_PYTHON_DIR/builder"
             ;;
         *)
-            __print_error "The '$TRAVIS_OS_NAME' platform is not supported."
-            return $__EXIT_FAILURE
+            __error "the '$TRAVIS_OS_NAME' platform is not supported" || return
             ;;
     esac
     __be_kind
@@ -696,6 +753,9 @@ install_python() {
     # When OS is Linux or macOS, python-build is used, on Windows, Chocolatey is used.
     #
     __be_strict
+
+    __required "${1:-}" "the installation directory" || return
+    __required "${2:-}" "the version specifier" || return
 
     local -r location=${1:?the installation directory must be specified}
     local -r specifier=${2:?the specifier must be specified}
