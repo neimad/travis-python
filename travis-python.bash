@@ -25,7 +25,7 @@ __travis_python_error() {
     #
     # If the command has been silenced, its output is printed.
     #
-    # The the command and its status code might be specified.
+    # The command and its status code might be specified.
     #
     local OPT
     local OPTIND
