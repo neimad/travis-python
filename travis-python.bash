@@ -54,40 +54,40 @@ __travis_python_error() {
     local -r status
     local -r failing_command
 
-    __stderr <<__ERROR__
+    __stderr <<EOF
 
 Command failed
 ==============
 $failing_command
     exited with status $status.
-__ERROR__
+EOF
 
     # Print output of silenced command.
     if [[ -s $silent_output_file ]]; then
-        __stderr <<__OUTPUT__
+        __stderr <<EOF
 
 Command standard output
 -----------------------
 $(<"$silent_output_file")
-__OUTPUT__
+EOF
     fi
 
     if [[ -s $silent_error_file ]]; then
-        __stderr <<__ERROR__
+        __stderr <<EOF
 
 Command standard error
 ----------------------
 $(<"$silent_error_file")
-__ERROR__
+EOF
     fi
 
     # Print the stack trace
     if ((${#BASH_LINENO[@]} > 0)); then
-        __stderr <<__TITLE__
+        __stderr <<EOF
 
 Stack trace
 -----------
-__TITLE__
+EOF
 
         i=0
         args_i=$# # skip arguments passed to this handler function
@@ -114,10 +114,10 @@ __TITLE__
                 fi
             fi
 
-            __stderr <<__LINE__
+            __stderr <<EOF
 [$i] $command_line
-  in ${BASH_SOURCE[i]:-<unknown file>} at line ${BASH_LINENO[i]}
-__LINE__
+  in ${BASH_SOURCE[i]:-'<unknown file>'} at line ${BASH_LINENO[i]}
+EOF
 
             ((i += 1))
         done
@@ -127,7 +127,7 @@ __LINE__
     local -r shell_options="${SHELLOPTS//:/$'\n    - '}"
     local -r command_paths="${PATH//:/$'\n  - '}"
 
-    __stderr <<__ENVIRONMENT__
+    __stderr <<EOF
 
 Environment
 -----------
@@ -141,7 +141,7 @@ Working in directory $PWD.
 
 Using PATH:
   - $command_paths
-__ENVIRONMENT__
+EOF
 }
 
 __be_strict() {
@@ -318,7 +318,7 @@ __print_info() {
     __required "${1:-}" "the name" || return
 
     local -r name=$1
-    local -r value=${2:-<null>}
+    local -r value=${2:-'<null>'}
 
     __puts "  $name:" | __colorize "yellow"
     __putsn " $value"
@@ -351,7 +351,7 @@ __print_banner() {
     #
     # Prints the banner.
     #
-    __colorize "blue" <<__BANNER__
+    __colorize "blue" <<EOF
 888                             d8b
 888                             Y8P
 888
@@ -369,7 +369,7 @@ Y88b.  888    888  888  Y8bd8P  888      X88   888    888
                              888           888
                              888      Y8b d88P
                              888       "Y88P"
-__BANNER__
+EOF
 }
 
 __trim() {
