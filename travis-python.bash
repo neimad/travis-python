@@ -757,8 +757,8 @@ install_python() {
     __required "${1:-}" "the installation directory" || return
     __required "${2:-}" "the version specifier" || return
 
-    local -r location=${1:?the installation directory must be specified}
-    local -r specifier=${2:?the specifier must be specified}
+    local -r location=$1
+    local -r specifier=$2
     local version
     export PATH
 
