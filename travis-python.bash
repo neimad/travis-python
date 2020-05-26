@@ -248,27 +248,41 @@ __colorize() {
         __error "the color '$color' is unknown" || return
     fi
 
-    if [[ -t 1 ]]; then
-        # NOT_COVERED_START
-        __puts "$reset"
-        __puts "${CSI}${code}m"
-        # NOT_COVERED_STOP
-    fi
 
     # Print each line of input
     while IFS= read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
+        if [[ -t 1 ]]; then
+            # NOT_COVERED_START
+            __puts "$reset"
+            __puts "${CSI}${code}m"
+            # NOT_COVERED_STOP
+        fi
+
         __putsn "$line"
+
+        if [[ -t 1 ]]; then
+            # NOT_COVERED_START
+            __puts "$reset"
+            # NOT_COVERED_STOP
+        fi
     done
 
     # If the last line isn't terminated by a newline character, print it now.
     if ((${#line} > 0)); then
-        __puts "$line"
-    fi
+        if [[ -t 1 ]]; then
+            # NOT_COVERED_START
+            __puts "$reset"
+            __puts "${CSI}${code}m"
+            # NOT_COVERED_STOP
+        fi
 
-    if [[ -t 1 ]]; then
-        # NOT_COVERED_START
-        __puts "$reset"
-        # NOT_COVERED_STOP
+        __puts "$line"
+
+        if [[ -t 1 ]]; then
+            # NOT_COVERED_START
+            __puts "$reset"
+            # NOT_COVERED_STOP
+        fi
     fi
 }
 
