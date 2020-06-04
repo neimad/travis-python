@@ -15,27 +15,17 @@ Context "When on Travis CI"
             command -v python-build
         }
 
-        Context "when on a Unix platform"
-            Skip if "not on Unix platform" test "${TRAVIS_OS_NAME:-}" != 'linux' -a "${TRAVIS_OS_NAME:-}" != 'osx'
+        It "installs python-build"
+            dummy __print_banner
 
-            It "installs python-build"
-                dummy __print_banner
-
-                When call setup_travis_python
-                The output should include "version: $TRAVIS_PYTHON_VERSION"
-                The output should include "> Installing python-build..."
-                The output should include "requested location: $TRAVIS_PYTHON_DIR/builder"
-                The output should include "installed version:"
-                The result of function "python_build_version" should match pattern 'python-build ????????'
-                The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
-                The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
-            End
-        End
-
-        Context "when on a Windows platform"
-            Skip if "not on Windows platform" test "${TRAVIS_OS_NAME:-}" != 'windows'
-
-            Todo "downgrades Chocolatey"
+            When call setup_travis_python
+            The output should include "version: $TRAVIS_PYTHON_VERSION"
+            The output should include "> Installing python-build..."
+            The output should include "requested location: $TRAVIS_PYTHON_DIR/builder"
+            The output should include "installed version:"
+            The result of function "python_build_version" should match pattern 'python-build ????????'
+            The variable PATH should start with "$TRAVIS_PYTHON_DIR/builder/bin:"
+            The result of function "python_build_location" should equal "$TRAVIS_PYTHON_DIR/builder/bin/python-build"
         End
     End
 End

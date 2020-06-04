@@ -572,38 +572,6 @@ __run_silent() {
     return $status
 }
 
-__windows_path() {
-    # __windows_path <path>
-    #
-    # Converts a Unix path to Windows flavor.
-    #
-    __required "${1:-}" "the path" || return
-
-    local -r path=$1
-    local converted
-    local drive_letter
-
-    # Convert slashes to backslashes
-    converted=${path//\//\\}
-
-    if [[ $converted == \\* ]]; then
-        # If it is an absolute path...
-        if [[ ${converted:2:1} == \\ ]]; then
-            # ... and the first component is a single letter, convert it to a
-            # drive letter.
-            drive_letter=$(tr '[:lower:]' '[:upper:]' <<<"${converted:1:1}")
-            converted="$drive_letter:${converted:2}"
-        elif [[ ${converted:0:5} == \\tmp\\ ]]; then
-            # ... and the first component is the temporary directory, convert it
-            # to the Windows user temporary directory path.
-            converted="C:\Users\\$USER\AppData\Local\Temp\\${converted:5}"
-        fi
-
-    fi
-
-    __putsn "$converted"
-}
-
 __latest_git_tag() {
     # __latest_git_tag <directory>
     #
@@ -685,32 +653,12 @@ __install_builder() {
     __print_task_done
 }
 
-__available_python_versions_from_builder() {
-    # __available_python_versions_from_builder
+__available_python_versions() {
+    # __available_python_versions
     #
     # Gives the list of Python versions available from python-build.
     #
     python-build --definitions | __trim
-}
-
-__available_python_versions_from_chocolatey() {
-    # __available_python_versions_from_chocolatey
-    #
-    # Gives the list of Python versions available from Chocolatey.
-    #
-    choco list python --exact --all-versions --limit-output | __trim | __strip_prefix "python|"
-}
-
-__available_python_versions() {
-    # __available_python_versions
-    #
-    # Gives the list of Python versions available on the current platform.
-    #
-    if [[ $TRAVIS_OS_NAME == "windows" ]]; then
-        __available_python_versions_from_chocolatey
-    else
-        __available_python_versions_from_builder
-    fi
 }
 
 __current_python_version() {
@@ -729,29 +677,10 @@ setup_travis_python() {
     #
     __be_strict
 
-    if [[ -z ${TRAVIS_OS_NAME:-} ]]; then
-        __error "the TRAVIS_OS_NAME environment variable must be set and not null" || return
-    fi
-
     __print_banner
     __print_info "version" $TRAVIS_PYTHON_VERSION
+    __install_builder "$TRAVIS_PYTHON_DIR/builder"
 
-    case $TRAVIS_OS_NAME in
-        windows)
-            # Workaround for https://github.com/chocolatey/choco/issues/1843
-            __print_task "Downgrading Chocolatey"
-            __print_info "current version" "$(choco --version)"
-            __print_info "requested version" "0.10.13"
-            __run_silent choco upgrade chocolatey --yes --version 0.10.13 --allow-downgrade
-            __print_task_done
-            ;;
-        linux | osx)
-            __install_builder "$TRAVIS_PYTHON_DIR/builder"
-            ;;
-        *)
-            __error "the '$TRAVIS_OS_NAME' platform is not supported" || return
-            ;;
-    esac
     __be_kind
 }
 
@@ -763,8 +692,6 @@ install_python() {
     #
     # The specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
-    #
-    # When OS is Linux or macOS, python-build is used, on Windows, Chocolatey is used.
     #
     __be_strict
 
@@ -781,22 +708,10 @@ install_python() {
     __print_info "requested location" "$location"
 
     version=$(__available_python_versions | __latest_matching_version "$specifier")
-
     __print_info "found version" "$version"
 
-    if [[ $TRAVIS_OS_NAME == "windows" ]]; then
-        __run_silent choco install python \
-            --version="$version" \
-            --yes \
-            --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(__windows_path "$location")\"" \
-            --override-arguments \
-            --apply-install-arguments-to-dependencies
-
-        PATH="$location:$location/Scripts:$PATH"
-    else
-        CFLAGS='' __run_silent python-build "$version" "$location"
-        PATH="$location/bin:$PATH"
-    fi
+    CFLAGS='' __run_silent python-build "$version" "$location"
+    PATH="$location/bin:$PATH"
 
     __print_info "installed version" "$(__current_python_version)"
 

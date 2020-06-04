@@ -37,11 +37,11 @@ Describe "__install_builder()"
     End
 End
 
-Describe "__available_python_versions_from_builder()"
+Describe "__available_python_versions()"
     It "gets the list of available versions from python-build"
         spy 'python-build'
 
-        When call __available_python_versions_from_builder
+        When call __available_python_versions
         The command "python-build --definitions" should be called
         The output should be blank
     End
@@ -58,7 +58,7 @@ Describe "__available_python_versions_from_builder()"
             anaconda-4.0.0
             '
 
-        When call __available_python_versions_from_builder
+        When call __available_python_versions
         The line 1 of entire output should equal "2.3.1"
         The line 2 of entire output should equal "3.7.6"
         The line 3 of entire output should equal "3.7.7"
@@ -73,7 +73,7 @@ Describe "__available_python_versions_from_builder()"
     It "gives a blank output if no version are available"
         stub 'python-build' -o ""
 
-        When call __available_python_versions_from_builder
+        When call __available_python_versions
         The output should be blank
     End
 End

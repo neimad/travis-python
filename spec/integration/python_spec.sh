@@ -29,10 +29,7 @@ Context "When on Travis CI"
         }
 
         It "installs Python ${PYTHON:-$'\b'} to specified directory"
-            binary_path=bin/python
-            if [[ ${TRAVIS_OS_NAME:-} == 'windows' ]]; then
-                binary_path=python
-            fi
+            setup_travis_python
 
             When call install_python "$directory/python" "$PYTHON"
             The output should include "> Installing Python..."
@@ -41,7 +38,7 @@ Context "When on Travis CI"
             The output should include "requested location: $directory/python"
             The output should include "installed version:"
             The result of function "python_version" should match pattern "Python $PYTHON*"
-            The result of function "python_location" should equal "$directory/python/$binary_path"
+            The result of function "python_location" should equal "$directory/python/bin/python"
         End
     End
 End
