@@ -248,7 +248,6 @@ __colorize() {
         __error "the color '$color' is unknown" || return
     fi
 
-
     # Print each line of input
     while IFS= read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
         if [[ -t 1 ]]; then
@@ -434,7 +433,7 @@ __strip_prefix() {
 }
 
 __is_version_greater() {
-    # __is_version_greater <version> <base>...
+    # __is_version_greater <version> <base>
     #
     # Checks if the specified version is greater than the specified base
     # version.
@@ -453,31 +452,26 @@ __is_version_greater() {
 
     local -r version=$1
     local -r base=$2
+    local -i i
     local -a version_parts
     local -a base_parts
 
-    if ((${#version} == 0)); then
-        return $__EXIT_FAILURE
-    fi
+    IFS='.-' read -r -a version_parts <<<"$version"
+    IFS='.-' read -r -a base_parts <<<"$base"
 
-    if ((${#base} == 0)); then
-        return $__EXIT_SUCCESS
-    fi
-
-    if [[ $version == "$base" ]]; then
-        return $__EXIT_FAILURE
-    fi
-
-    IFS='.' read -r -a version_parts <<<"$version"
-    IFS='.' read -r -a base_parts <<<"$base"
-
-    for ((i = 0; i < ${#version_parts[@]}; i++)); do
+    for i in {0..2}; do
         if ((version_parts[i] > base_parts[i])); then
             return $__EXIT_SUCCESS
         elif ((version_parts[i] < base_parts[i])); then
             return $__EXIT_FAILURE
         fi
     done
+
+    if [[ ${version_parts[3]:-} > ${base_parts[3]:-} ]]; then
+        return $__EXIT_SUCCESS
+    fi
+
+    return $__EXIT_FAILURE
 }
 
 __latest_matching_version() {

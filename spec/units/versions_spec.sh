@@ -25,26 +25,46 @@ Describe "__is_version_greater()"
         The status should be success
     End
 
-    It "considers the compared version to be lower if the compared version are identical"
+    It "considers the compared version to be lower if its identical to the base one"
         When call __is_version_greater "1.0.0" "1.0.0"
         The status should be failure
     End
 
     Context
         Parameters
-          # version part description        full version
-            "patch"                         "1.4.3"
-            "minor"                         "1.5.2"
-            "major"                         "2.4.2"
+          # version part description        lower version   greater version
+            "patch"                         "1.4.2"         "1.4.3"
+            "minor"                         "1.4.2"         "1.5.2"
+            "major"                         "1.4.2"         "2.4.2"
+            "pre-release"                   "1.4.2-alpha"   "1.4.2-beta"
         End
 
         It "checks if the compared version is greater than the base one regarding the $1 version"
-            When call __is_version_greater "$2" "1.4.2"
+            When call __is_version_greater "$3" "$2"
             The status should be success
         End
 
         It "checks if the compared version is lower than the base one regarding the $1 version"
-            When call __is_version_greater "1.4.2" "$2"
+            When call __is_version_greater "$2" "$3"
+            The status should be failure
+        End
+    End
+
+    Context
+        Parameters
+          # greater version description     greater version         lower version description   lower version
+            "a beta version"                "2.7.1-beta1"           "an alpha version"          "2.7.1-alpha3"
+            "a release candidate version"   "2.7.1-rc2"             "an alpha version"          "2.7.1-alpha3"
+            "a release candidate version"   "2.7.1-rc2"             "a beta version"            "2.7.1-beta1"
+        End
+
+        It "considers $1 to be greater than $3"
+            When call __is_version_greater "$2" "$4"
+            The status should be success
+        End
+
+        It "considers $3 to be lower than $1"
+            When call __is_version_greater "$4" "$2"
             The status should be failure
         End
     End
