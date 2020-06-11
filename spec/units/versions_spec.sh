@@ -93,6 +93,18 @@ Describe "__latest_matching_version()"
         End
     End
 
+    It "fails when an unknown option is passed"
+        Data
+            #|1.1.8
+            #|1.1.9
+            #|1.1.10
+        End
+
+        When call __latest_matching_version -z "1.1"
+        The status should be failure
+        The error should equal "Unknown option 'z'."
+    End
+
     Context
         Parameters
           # specifier description                       specifier   expected result
@@ -168,6 +180,28 @@ Describe "__latest_matching_version()"
         The output should equal "3.7.5"
     End
 
+    It "filters alpha releases"
+        Data
+            #|3.7.6
+            #|3.7.6-a1
+            #|3.7.6-a2
+        End
+
+        When call __latest_matching_version "3.7"
+        The output should equal "3.7.6"
+    End
+
+    It "filters beta releases"
+        Data
+            #|3.7.6
+            #|3.7.6-b3
+            #|3.7.6-b4
+        End
+
+        When call __latest_matching_version "3.7"
+        The output should equal "3.7.6"
+    End
+
     It "filters release candidates"
         Data
             #|3.7.6
@@ -185,6 +219,46 @@ Describe "__latest_matching_version()"
         End
 
         When call __latest_matching_version "3.7"
+        The output should equal "3.7.6"
+    End
+
+    It "allows to unfilter alpha releases"
+        Data
+            #|3.7.6
+            #|3.7.6-alpha1
+        End
+
+        When call __latest_matching_version -p "3.7"
+        The output should equal "3.7.6-alpha1"
+    End
+
+    It "allows to unfilter beta releases"
+        Data
+            #|3.7.6
+            #|3.7.6-b3
+        End
+
+        When call __latest_matching_version -p "3.7"
+        The output should equal "3.7.6-b3"
+    End
+
+    It "allows to unfilter release candidates"
+        Data
+            #|3.7.6
+            #|3.7.6-rc2
+        End
+
+        When call __latest_matching_version -p "3.7"
+        The output should equal "3.7.6-rc2"
+    End
+
+    It "does not allow to unfilter daily builds"
+        Data
+            #|3.7.6
+            #|3.7.2.2020125
+        End
+
+        When call __latest_matching_version -p "3.7"
         The output should equal "3.7.6"
     End
 End

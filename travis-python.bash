@@ -475,16 +475,38 @@ __is_version_greater() {
 }
 
 __latest_matching_version() {
-    # __latest_matching_version <specifier>
+    # __latest_matching_version [-p] <specifier>
     #
-    # Gives the latest version matching the specifier from a list of versions.
+    # Gives the latest version matching the specifier from a list of versions
+    # read on standard input.
     #
     # The versions are expected to follow the *semver* specification. The
     # specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
     #
-    # Only stable versions are considered.
+    # Only stable versions are considered by default. But pre-releases (alpha,
+    # beta and release candidates) can be considered if the `-p` flag is
+    # specified.
     #
+    local OPT
+    local OPTIND
+    local -r stable_pattern='^[[:digit:]]+(\.[[:digit:]]+){2}$'
+    local -r prereleases_pattern='^[[:digit:]]+(\.[[:digit:]]+){2}(-(a|alpha|b|beta|rc)[[:digit:]])?$'
+    local pattern=$stable_pattern
+
+    while getopts ':p' OPT; do
+        case $OPT in
+            p)
+                pattern=$prereleases_pattern
+                ;;
+            *)
+                __print_error "Unknown option '$OPTARG'."
+                return 1 ;;
+        esac
+    done
+
+    shift $((OPTIND - 1))
+
     __required "${1:-}" "the version specifier" || return
 
     local -r specifier=$1
@@ -499,7 +521,7 @@ __latest_matching_version() {
     while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" version; do
         got_input=1
 
-        if [[ $version =~ ^[[:digit:]]+(\.[[:digit:]]+){2}$ && $version =~ ^${specifier_pattern} ]]; then
+        if [[ $version =~ $pattern && $version =~ ^${specifier_pattern} ]]; then
             if __is_version_greater "$version" "$latest_version"; then
                 latest_version="$version"
             fi
@@ -781,6 +803,7 @@ install_python() {
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __run_silent choco install python \
             --version="$version" \
+            --allow-downgrade \
             --yes \
             --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(__windows_path "$location")\"" \
             --override-arguments \
