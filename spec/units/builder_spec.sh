@@ -70,6 +70,28 @@ Describe "__available_python_versions_from_builder()"
         The lines of entire output should equal 8
     End
 
+    It "normalizes versions to conform to semver"
+        stub 'python-build' -o '
+        2.7.8
+        2.7.9
+        2.7.10b4
+        3.8.0
+        3.8.1
+        3.8.2
+        3.9.0a12
+        '
+
+        When call __available_python_versions_from_builder
+        The line 1 of entire output should equal "2.7.8"
+        The line 2 of entire output should equal "2.7.9"
+        The line 3 of entire output should equal "2.7.10-b4"
+        The line 4 of entire output should equal "3.8.0"
+        The line 5 of entire output should equal "3.8.1"
+        The line 6 of entire output should equal "3.8.2"
+        The line 7 of entire output should equal "3.9.0-a12"
+        The lines of entire output should equal 7
+    End
+
     It "gives a blank output if no version are available"
         stub 'python-build' -o ""
 

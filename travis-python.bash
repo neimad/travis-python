@@ -501,7 +501,8 @@ __latest_matching_version() {
                 ;;
             *)
                 __print_error "Unknown option '$OPTARG'."
-                return 1 ;;
+                return 1
+                ;;
         esac
     done
 
@@ -706,7 +707,18 @@ __available_python_versions_from_builder() {
     #
     # Gives the list of Python versions available from python-build.
     #
-    python-build --definitions | __trim
+    local line
+
+    python-build --definitions | __trim | while read -r -t "$TRAVIS_PYTHON_READ_TIMEOUT" line; do
+        shopt -s extglob
+
+        # Add missing pre-release hyphen
+        if [[ $line =~ [[:digit:]]([[:alpha:]]) ]]; then
+            __putsn "${line/${BASH_REMATCH[1]}/-${BASH_REMATCH[1]}}"
+        else
+            __putsn "$line"
+        fi
+    done
 }
 
 __available_python_versions_from_chocolatey() {
