@@ -34,7 +34,14 @@ Context "When on Travis CI"
                 binary_path=python
             fi
 
-            When call install_python "$directory/python" "$PYTHON"
+            if [[ $PRERELEASE == "yes" ]]; then
+                When call install_python -p "$directory/python" "$PYTHON"
+                The output should include "pre-release allowed: yes"
+            else
+                When call install_python "$directory/python" "$PYTHON"
+                The output should include "pre-release allowed: no"
+            fi
+
             The output should include "> Installing Python..."
             The output should include "requested version: $PYTHON"
             The output should include "found version:"

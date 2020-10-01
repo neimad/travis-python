@@ -490,6 +490,7 @@ __latest_matching_version() {
     #
     local OPT
     local OPTIND
+    local OPTARG
     local -r stable_pattern='^[[:digit:]]+(\.[[:digit:]]+){2}$'
     local -r prereleases_pattern='^[[:digit:]]+(\.[[:digit:]]+){2}(-(a|alpha|b|beta|rc)[[:digit:]])?$'
     local pattern=$stable_pattern
@@ -784,7 +785,7 @@ setup_travis_python() {
 }
 
 install_python() {
-    # install_python <directory> <specifier>
+    # install_python [-p] <directory> <specifier>
     #
     # Installs the latest Python version matching the specified one in the
     # specified directory.
@@ -792,9 +793,33 @@ install_python() {
     # The specifier can be a complete version (major.minor.patch) or omit one or
     # more leading components.
     #
+    # If the `-p` flag is specified, the pre-release versions are considered.
+    # Otherwize, only stable versions are searched.
+    #
     # When OS is Linux or macOS, python-build is used, on Windows, Chocolatey is used.
     #
     __be_strict
+
+    local OPT
+    local OPTIND
+    local OPTARG
+    local -i prerelease_allowed=0
+    local flags=''
+
+    while getopts ':p' OPT; do
+        case $OPT in
+            p)
+                prerelease_allowed=1
+                flags+="-p"
+                ;;
+            *)
+                __print_error "Unknown option '$OPTARG'."
+                return 1
+                ;;
+        esac
+    done
+
+    shift $((OPTIND - 1))
 
     __required "${1:-}" "the installation directory" || return
     __required "${2:-}" "the version specifier" || return
@@ -806,9 +831,14 @@ install_python() {
 
     __print_task "Installing Python"
     __print_info "requested version" "$specifier"
+    if ((prerelease_allowed)); then
+        __print_info "pre-release allowed" "yes"
+    else
+        __print_info "pre-release allowed" "no"
+    fi
     __print_info "requested location" "$location"
 
-    version=$(__available_python_versions | __latest_matching_version "$specifier")
+    version=$(__available_python_versions | __latest_matching_version $flags "$specifier")
 
     __print_info "found version" "$version"
 

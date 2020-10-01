@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog],
 and this project adheres to [Semantic Versioning].
 
 ## [Unreleased]
+### Added
+ - Installation of pre-release Python distribution.
 ### Changed
  - Use stream based functions internally.
 

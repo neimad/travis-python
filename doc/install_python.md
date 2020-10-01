@@ -1,7 +1,7 @@
 # install_python()
 
 ```bash
-install_python <location> <specifier>
+install_python [-p] <location> <specifier>
 ```
 
 The specified Python version, if found, will be installed at the specified
@@ -17,3 +17,6 @@ The `specifier` is similar to [the `python` key available in the Travis CI confi
    stable version available is installed, if any.
 
 > :warning: Version constraints (e.g. `~`, `^` or `*`) are NOT supported.
+
+By default, only stable versions are installed. If the `-p` flag is specified,
+pre-release versions are considered.
