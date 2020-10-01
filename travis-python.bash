@@ -845,6 +845,7 @@ install_python() {
     if [[ $TRAVIS_OS_NAME == "windows" ]]; then
         __run_silent choco install python \
             --version="$version" \
+            --prerelease \
             --allow-downgrade \
             --yes \
             --install-arguments="/quiet InstallAllUsers=0 TargetDir=\"$(__windows_path "$location")\"" \
