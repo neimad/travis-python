@@ -8,6 +8,7 @@ shellspec_helper_configure() {
     shellspec_import 'support/doubles'
     shellspec_import 'support/fixtures'
     shellspec_import 'support/travis-python'
+    shellspec_import 'support/travis'
 
     shellspec_before 'setup_travis_python_directory'
     shellspec_after 'cleanup_travis_python_directory'
